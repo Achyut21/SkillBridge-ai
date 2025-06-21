@@ -1,0 +1,268 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model for authentication and profile
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  name            String?
+  image           String?
+  emailVerified   DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Relations
+  accounts        Account[]
+  sessions        Session[]
+  userSkills      UserSkill[]
+  learningPaths   LearningPath[]
+  progress        Progress[]
+  achievements    Achievement[]
+  preferences     UserPreferences?
+  voiceSessions   VoiceSession[]
+  
+  @@index([email])
+}
+
+// NextAuth.js models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+}
+
+// Skills and competencies
+model Skill {
+  id          String      @id @default(cuid())
+  name        String      @unique
+  category    String
+  description String?
+  marketDemand Float?     // 0-100 scale
+  trendingUp  Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+  userSkills  UserSkill[]
+  pathSkills  PathSkill[]
+  resources   Resource[]
+  
+  @@index([category])
+  @@index([marketDemand])
+}
+
+model UserSkill {
+  id              String   @id @default(cuid())
+  userId          String
+  skillId         String
+  proficiencyLevel Int     // 1-10 scale
+  verified        Boolean  @default(false)
+  lastAssessed    DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id])
+  
+  @@unique([userId, skillId])
+  @@index([userId])
+  @@index([skillId])
+}
+
+// Learning paths and resources
+model LearningPath {
+  id              String    @id @default(cuid())
+  userId          String
+  title           String
+  description     String?
+  targetRole      String?
+  estimatedHours  Int
+  difficulty      String    // beginner, intermediate, advanced
+  isPublic        Boolean   @default(false)
+  completedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pathSkills PathSkill[]
+  resources  PathResource[]
+  progress   Progress[]
+  
+  @@index([userId])
+  @@index([isPublic])
+}
+
+model PathSkill {
+  id             String       @id @default(cuid())
+  learningPathId String
+  skillId        String
+  targetLevel    Int          // 1-10 scale
+  priority       Int          @default(0)
+  
+  learningPath LearningPath @relation(fields: [learningPathId], references: [id], onDelete: Cascade)
+  skill        Skill        @relation(fields: [skillId], references: [id])
+  
+  @@unique([learningPathId, skillId])
+  @@index([learningPathId])
+  @@index([skillId])
+}
+
+model Resource {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  type        String    // course, video, article, book, project
+  provider    String?   // udemy, coursera, youtube, etc
+  url         String
+  duration    Int?      // in minutes
+  difficulty  String    // beginner, intermediate, advanced
+  isPaid      Boolean   @default(false)
+  price       Float?
+  rating      Float?
+  skillId     String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  skill       Skill?         @relation(fields: [skillId], references: [id])
+  pathResources PathResource[]
+  
+  @@index([type])
+  @@index([skillId])
+}
+
+model PathResource {
+  id             String       @id @default(cuid())
+  learningPathId String
+  resourceId     String
+  order          Int
+  isCompleted    Boolean      @default(false)
+  completedAt    DateTime?
+  
+  learningPath LearningPath @relation(fields: [learningPathId], references: [id], onDelete: Cascade)
+  resource     Resource     @relation(fields: [resourceId], references: [id])
+  
+  @@unique([learningPathId, resourceId])
+  @@index([learningPathId])
+  @@index([resourceId])
+}
+
+// Progress tracking
+model Progress {
+  id             String       @id @default(cuid())
+  userId         String
+  learningPathId String
+  resourceId     String?
+  progressPercent Float       @default(0)
+  timeSpent      Int         @default(0) // in minutes
+  lastActivity   DateTime    @default(now())
+  notes          String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  learningPath LearningPath @relation(fields: [learningPathId], references: [id])
+  
+  @@unique([userId, learningPathId])
+  @@index([userId])
+  @@index([learningPathId])
+}
+
+// Achievements and milestones
+model Achievement {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // skill_milestone, path_completion, streak, etc
+  title       String
+  description String?
+  metadata    Json?    // Additional achievement data
+  unlockedAt  DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([type])
+}
+
+// User preferences and settings
+model UserPreferences {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  voiceEnabled          Boolean  @default(true)
+  voiceId               String?  // ElevenLabs voice ID
+  voiceSpeed            Float    @default(1.0)
+  dailyLearningGoal     Int      @default(30) // minutes
+  notificationsEnabled  Boolean  @default(true)
+  preferredLearningTime String?  // morning, afternoon, evening
+  theme                 String   @default("dark")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Voice coaching sessions
+model VoiceSession {
+  id            String   @id @default(cuid())
+  userId        String
+  type          String   // daily_briefing, skill_lesson, motivation, etc
+  transcript    String?
+  audioUrl      String?
+  duration      Int?     // in seconds
+  sentiment     String?  // positive, neutral, negative
+  keyInsights   Json?
+  createdAt     DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([type])
+  @@index([createdAt])
+}
+
+// Market data cache
+model MarketData {
+  id           String   @id @default(cuid())
+  type         String   // job_posting, skill_trend, salary_data
+  category     String?
+  location     String?
+  data         Json
+  source       String?
+  lastUpdated  DateTime @default(now())
+  expiresAt    DateTime
+  
+  @@index([type])
+  @@index([category])
+  @@index([lastUpdated])
+}

@@ -2,26 +2,157 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+    --radius: 0.75rem;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* Neural Glassmorphism Base Styles */
+@layer components {
+  /* Glassmorphism base */
+  .glass {
+    @apply backdrop-blur-xl bg-glass-light border border-white/10;
   }
+  
+  .glass-heavy {
+    @apply backdrop-blur-2xl bg-glass-heavy border border-white/20;
+  }
+  
+  /* Neon glow effects */
+  .neon-glow-blue {
+    @apply shadow-[0_0_30px_rgba(0,217,255,0.5)] border-neon-blue/50;
+  }
+  
+  .neon-glow-purple {
+    @apply shadow-[0_0_30px_rgba(124,58,237,0.5)] border-neon-purple/50;
+  }
+  
+  .neon-glow-pink {
+    @apply shadow-[0_0_30px_rgba(236,72,153,0.5)] border-neon-pink/50;
+  }
+  
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-neural bg-clip-text text-transparent;
+  }
+  
+  /* Neural network lines */
+  .neural-line {
+    background: linear-gradient(90deg, transparent, #00D9FF 50%, transparent);
+    height: 1px;
+    animation: neural-pulse 3s ease-in-out infinite;
+  }
+  
+  @keyframes neural-pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+  
+  /* Floating particles */
+  .particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #00D9FF;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #00D9FF;
+    animation: float-particle 20s infinite linear;
+  }
+  
+  @keyframes float-particle {
+    0% {
+      transform: translateY(100vh) translateX(0);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-100vh) translateX(100px);
+      opacity: 0;
+    }
+  }
+  
+  /* Interactive hover effects */
+  .hover-glow {
+    @apply transition-all duration-300;
+  }
+  
+  .hover-glow:hover {
+    @apply shadow-[0_0_40px_rgba(0,217,255,0.6)] scale-[1.02];
+  }
+  
+  /* Gradient backgrounds */
+  .gradient-bg {
+    background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 50%, #1a1a2e 100%);
+    position: relative;
+  }
+  
+  .gradient-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 50%, rgba(0,217,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(124,58,237,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(236,72,153,0.1) 0%, transparent 50%);
+    animation: gradient 15s ease infinite;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #00D9FF, #7C3AED);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #00D9FF, #EC4899);
+}
+
+/* Selection styling */
+::selection {
+  background: rgba(0, 217, 255, 0.3);
+  color: #fff;
 }

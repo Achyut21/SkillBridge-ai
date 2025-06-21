@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: skillbridge-postgres
+    environment:
+      POSTGRES_USER: skillbridge
+      POSTGRES_PASSWORD: skillbridge_dev_password
+      POSTGRES_DB: skillbridge_ai
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - skillbridge-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: skillbridge-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - skillbridge-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: skillbridge-app
+    environment:
+      - DATABASE_URL=postgresql://skillbridge:skillbridge_dev_password@postgres:5432/skillbridge_ai?schema=public
+      - REDIS_URL=redis://redis:6379
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - skillbridge-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+
+networks:
+  skillbridge-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
