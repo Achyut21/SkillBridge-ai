@@ -126,6 +126,9 @@ static/uploads/
 dist/
 build/
 
+# Security documentation
+ENV_SECURITY_FIX.md
+
 # Lock files (keep package-lock.json)
 yarn.lock
 pnpm-lock.yaml
