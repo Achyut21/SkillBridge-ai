@@ -1,82 +1,40 @@
-"use client"
+'use client';
 
-import { cn } from "@/lib/utils"
-import { ReactNode } from "react"
+import { cn } from '@/lib/utils';
+import { ReactNode } from 'react';
 
 interface NeonBorderProps {
-  children: ReactNode
-  className?: string
-  color?: "blue" | "purple" | "pink" | "cyan" | "gradient"
-  animated?: boolean
-  rounded?: "sm" | "md" | "lg" | "xl" | "2xl" | "full"
-  borderWidth?: "thin" | "normal" | "thick"
+  children: ReactNode;
+  className?: string;
+  intensity?: 'subtle' | 'medium' | 'strong';
+  animate?: boolean;
 }
 
 export function NeonBorder({
   children,
   className,
-  color = "blue",
-  animated = true,
-  rounded = "xl",
-  borderWidth = "normal",
+  intensity = 'subtle',
+  animate = false,
 }: NeonBorderProps) {
-  const colors = {
-    blue: "from-neon-blue to-neon-blue",
-    purple: "from-neon-purple to-neon-purple",
-    pink: "from-neon-pink to-neon-pink",
-    cyan: "from-neon-cyan to-neon-cyan",
-    gradient: "from-neon-blue via-neon-purple to-neon-pink",
-  }
-
-  const roundedStyles = {
-    sm: "rounded-sm",
-    md: "rounded-md",
-    lg: "rounded-lg",
-    xl: "rounded-xl",
-    "2xl": "rounded-2xl",
-    full: "rounded-full",
-  }
-
-  const borderWidths = {
-    thin: "p-[1px]",
-    normal: "p-[2px]",
-    thick: "p-[3px]",
-  }
+  const intensities = {
+    subtle: 'shadow-md dark:shadow-[0_0_15px_rgba(168,85,247,0.2)] border-brand-300 dark:border-brand-500/30',
+    medium: 'shadow-lg dark:shadow-[0_0_25px_rgba(168,85,247,0.3)] border-brand-400 dark:border-brand-500/40',
+    strong: 'shadow-xl dark:shadow-[0_0_35px_rgba(168,85,247,0.4)] border-brand-500 dark:border-brand-500/50',
+  };
 
   return (
-    <div className={cn("relative", className)}>
-      {/* Animated glow background */}
-      {animated && (
-        <div
-          className={cn(
-            "absolute inset-0 bg-gradient-to-r blur-xl opacity-50",
-            colors[color],
-            roundedStyles[rounded],
-            "animate-pulse"
-          )}
-        />
+    <div
+      className={cn(
+        'relative rounded-2xl p-[2px] transition-all duration-300',
+        intensities[intensity],
+        animate && 'animate-subtle-pulse',
+        className
       )}
-      
-      {/* Border container */}
-      <div
-        className={cn(
-          "relative bg-gradient-to-r",
-          colors[color],
-          roundedStyles[rounded],
-          borderWidths[borderWidth],
-          animated && "animate-glow"
-        )}
-      >
-        {/* Inner content with background */}
-        <div
-          className={cn(
-            "bg-background h-full w-full",
-            roundedStyles[rounded]
-          )}
-        >
-          {children}
-        </div>
+    >
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-brand-400 to-brand-600 dark:from-brand-600 dark:to-brand-700 opacity-10 dark:opacity-20" />
+      <div className="relative rounded-2xl bg-background">
+        {children}
       </div>
     </div>
-  )
+  );
 }

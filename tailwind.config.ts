@@ -57,6 +57,34 @@ const config: Config = {
           pink: "#EC4899",
           cyan: "#06B6D4",
         },
+        // Monochromatic purple palette
+        brand: {
+          50: "#FAF5FF",   // Lightest purple
+          100: "#F3E8FF",
+          200: "#E9D5FF",
+          300: "#D8B4FE",
+          400: "#C084FC",
+          500: "#A855F7",  // Main purple
+          600: "#9333EA",
+          700: "#7C3AED",  // Darker purple
+          800: "#6B21A8",
+          900: "#581C87",  // Darkest purple
+          950: "#3B0764",
+        },
+        // Neutral grays for text and backgrounds
+        neutral: {
+          50: "#FAFAFA",
+          100: "#F4F4F5",
+          200: "#E4E4E7",
+          300: "#D4D4D8",
+          400: "#A1A1AA",
+          500: "#71717A",
+          600: "#52525B",
+          700: "#3F3F46",
+          800: "#27272A",
+          900: "#18181B",
+          950: "#09090B",
+        },
         glass: {
           light: "rgba(255, 255, 255, 0.05)",
           medium: "rgba(255, 255, 255, 0.1)",

@@ -42,6 +42,56 @@ export function VoicePlayer({ audioUrl, onEnded, className }: VoicePlayerProps) 
     }
   }, [audioUrl, onEnded])
 
+  // Auto-play when audioUrl changes
+  useEffect(() => {
+    if (audioUrl && audioRef.current) {
+      // Handle base64 data URLs by converting to blob
+      if (audioUrl.startsWith('data:')) {
+        try {
+          // Extract base64 data
+          const base64Data = audioUrl.split(',')[1]
+          const mimeType = audioUrl.match(/data:([^;]+)/)?.[1] || 'audio/mpeg'
+          
+          // Convert to blob
+          const byteCharacters = atob(base64Data)
+          const byteNumbers = new Array(byteCharacters.length)
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i)
+          }
+          const byteArray = new Uint8Array(byteNumbers)
+          const blob = new Blob([byteArray], { type: mimeType })
+          const blobUrl = URL.createObjectURL(blob)
+          
+          // Update audio source
+          audioRef.current.src = blobUrl
+          
+          // Clean up blob URL when component unmounts
+          return () => URL.revokeObjectURL(blobUrl)
+        } catch (error) {
+          console.error("Failed to process audio data:", error)
+        }
+      }
+      
+      // Attempt to play
+      const playPromise = audioRef.current.play()
+      
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            console.log("Audio playback started")
+            setIsPlaying(true)
+          })
+          .catch(err => {
+            console.error("Failed to auto-play:", err)
+            // Show user-friendly message
+            if (err.name === 'NotAllowedError') {
+              console.log("Browser prevented autoplay. User interaction required.")
+            }
+          })
+      }
+    }
+  }, [audioUrl])
+
   const togglePlayPause = () => {
     const audio = audioRef.current
     if (!audio || !audioUrl) return
@@ -102,11 +152,11 @@ export function VoicePlayer({ audioUrl, onEnded, className }: VoicePlayerProps) 
           <div
             key={i}
             className={cn(
-              "w-1 bg-gradient-to-t from-neon-blue to-neon-purple rounded-full transition-all duration-300",
+              "w-1 bg-gradient-to-t from-brand-400 to-brand-600 rounded-full transition-all duration-300",
               isPlaying ? "animate-pulse" : "opacity-50"
             )}
             style={{
-              height: `${Math.random() * 100}%`,
+              height: `${30 + (i % 3) * 20 + (i % 7) * 10}%`,
               animationDelay: `${i * 0.1}s`
             }}
           />

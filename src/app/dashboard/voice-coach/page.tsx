@@ -1,250 +1,286 @@
 "use client"
 
-import { useState } from "react"
-import { 
-  GlassmorphismCard, 
-  GradientButton, 
-  NeonBorder,
-  FloatingElement 
-} from "@/components/custom"
-import { VoicePlayer } from "@/components/voice/voice-player"
+import { useState, useEffect } from "react"
+import { GlassmorphismCard } from "@/components/custom/glassmorphism-card"
 import { AICoachAvatar } from "@/components/voice/ai-coach-avatar"
+import { ChatInterface } from "@/components/ai/chat-interface"
+import { SmartSuggestions } from "@/components/ai/smart-suggestions"
+import { VoicePlayer } from "@/components/voice/voice-player"
+import { useAIChat } from "@/hooks/use-ai-chat"
 import { useVoiceStore } from "@/stores/voice-store"
+import { useSession } from "next-auth/react"
 import { 
-  Mic, 
-  MicOff, 
-  Volume2, 
   Settings, 
-  MessageSquare,
-  Brain,
-  Target,
-  Zap
+  Volume2, 
+  VolumeX,
+  Sparkles,
+  Loader2,
+  RefreshCw,
+  MessageSquare
 } from "lucide-react"
+import { toast } from "sonner"
 
-const coachingPrompts = [
-  {
-    icon: Brain,
-    title: "Daily Motivation",
-    prompt: "Give me a motivational message for learning",
-    color: "text-neon-blue"
-  },
-  {
-    icon: Target,
-    title: "Goal Setting",
-    prompt: "Help me set learning goals for this week",
-    color: "text-neon-purple"
-  },
-  {
-    icon: MessageSquare,
-    title: "Career Advice",
-    prompt: "What skills should I focus on for career growth?",
-    color: "text-neon-pink"
-  },
-  {
-    icon: Zap,
-    title: "Quick Tips",
-    prompt: "Give me a quick learning tip",
-    color: "text-neon-cyan"
-  }
+const suggestedPrompts = [
+  "What skills should I focus on for AI engineering?",
+  "Create a learning plan for becoming a full-stack developer",
+  "How can I improve my JavaScript skills?",
+  "What are the most in-demand skills in 2025?",
+  "Help me prepare for technical interviews",
+  "Suggest resources for learning React and TypeScript"
 ]
 
+const WELCOME_MESSAGE = "👋 Hi! I'm your AI voice coach. Enable voice mode using the button above to hear my responses. I can help you with career guidance, skill recommendations, and personalized learning paths. What would you like to explore today?"
+
 export default function VoiceCoachPage() {
-  const [selectedPrompt, setSelectedPrompt] = useState<string>("")
-  const [isRecording, setIsRecording] = useState(false)
+  const { data: session } = useSession()
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null)
+  const [recommendations, setRecommendations] = useState<any>({
+    skills: [],
+    paths: [],
+    nextAction: null
+  })
+  const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false)
+  
   const {
     isEnabled,
     isSpeaking,
     currentAudioUrl,
+    selectedVoiceId,
     setEnabled,
     setSpeaking,
     setCurrentAudioUrl
   } = useVoiceStore()
 
-  const handlePromptSelect = async (prompt: string) => {
-    setSelectedPrompt(prompt)
-    
-    // TODO: Call API to generate voice response
-    // For now, just show the prompt
-    console.log("Selected prompt:", prompt)
+  const {
+    messages,
+    sessionId,
+    isLoading,
+    sendMessage,
+    playAudio: hookPlayAudio,
+    stopAudio: hookStopAudio,
+    isPlaying
+  } = useAIChat({
+    sessionId: selectedSessionId || undefined,
+    enableVoice: isEnabled,
+    onNewMessage: (message) => {
+      // Handle new message with voice
+      if (message.metadata?.audioUrl && isEnabled) {
+        // Set the audio URL for VoicePlayer to handle
+        setCurrentAudioUrl(message.metadata.audioUrl)
+        setSpeaking(true)
+      }
+    }
+  })
+
+  // Override the hook's audio functions to prevent double-playing
+  const playAudio = (url: string) => {
+    setCurrentAudioUrl(url)
+    setSpeaking(true)
   }
 
-  const toggleRecording = () => {
-    setIsRecording(!isRecording)
-    // TODO: Implement voice recording
+  const stopAudio = () => {
+    setCurrentAudioUrl(null)
+    setSpeaking(false)
+    hookStopAudio()
+  }
+
+  // Update selected session when a new one is created
+  useEffect(() => {
+    if (sessionId && !selectedSessionId) {
+      setSelectedSessionId(sessionId)
+    }
+  }, [sessionId, selectedSessionId])
+
+  // Load recommendations only on user action, not on mount
+  useEffect(() => {
+    // Don't auto-load recommendations
+    // if (session?.user) {
+    //   loadRecommendations()
+    // }
+  }, [session])
+
+  const loadRecommendations = async () => {
+    if (!session?.user) return
+    
+    setIsLoadingRecommendations(true)
+    try {
+      const response = await fetch("/api/ai/recommendations?count=5&includeMarketData=true")
+      if (response.ok) {
+        const data = await response.json()
+        setRecommendations({
+          skills: data,
+          paths: [], // TODO: Load path recommendations
+          nextAction: null // TODO: Load next action
+        })
+      }
+    } catch (error) {
+      console.error("Failed to load recommendations:", error)
+      toast.error("Failed to load recommendations")
+    } finally {
+      setIsLoadingRecommendations(false)
+    }
+  }
+
+  const handleSendMessage = async (content: string) => {
+    setSpeaking(false)
+    stopAudio()
+    await sendMessage(content)
+  }
+
+  const handleVoiceToggle = () => {
+    setEnabled(!isEnabled)
+    if (!isEnabled) {
+      toast.success("Voice enabled - I'll speak my responses", {
+        description: "You'll hear my voice after each message",
+        icon: <Volume2 className="w-4 h-4" />
+      })
+    } else {
+      stopAudio()
+      setSpeaking(false)
+      toast.info("Voice disabled - Text only mode", {
+        icon: <VolumeX className="w-4 h-4" />
+      })
+    }
   }
 
   return (
-    <div className="space-y-8">
+    <div className="voice-coach-container h-full">
       {/* Page Header */}
-      <div>
-        <h1 className="text-4xl font-bold gradient-text mb-2">
-          AI Voice Coach
-        </h1>
-        <p className="text-gray-400 text-lg">
-          Get personalized guidance and motivation through voice interaction
-        </p>
+      <div className="flex items-center justify-between mb-6 flex-shrink-0">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            AI Voice Coach
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Get personalized guidance and motivation through AI-powered coaching
+          </p>
+        </div>
+        
+        <div className="flex items-center gap-4">
+          {/* Voice Toggle */}
+          <button
+            onClick={handleVoiceToggle}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+          >
+            {isEnabled ? (
+              <>
+                <Volume2 className="w-4 h-4 text-brand-600" />
+                <span className="text-sm font-medium">Voice On</span>
+              </>
+            ) : (
+              <>
+                <VolumeX className="w-4 h-4 text-gray-500" />
+                <span className="text-sm font-medium">Voice Off</span>
+              </>
+            )}
+          </button>
+          
+          {/* Settings Button */}
+          <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <Settings className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+          </button>
+        </div>
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Coach Avatar & Controls */}
-        <div className="lg:col-span-1">
-          <GlassmorphismCard variant="heavy" glow="purple" className="p-8">
-            <div className="flex flex-col items-center space-y-8">
-              {/* Avatar */}
-              <AICoachAvatar
-                isSpeaking={isSpeaking}
-                isListening={isRecording}
-                size="lg"
-              />
-
-              {/* Voice Toggle */}
-              <div className="text-center space-y-4">
-                <h3 className="text-xl font-semibold">Voice Assistant</h3>
-                <label className="flex items-center justify-center gap-3">
-                  <span className="text-sm text-gray-400">
-                    {isEnabled ? "Enabled" : "Disabled"}
-                  </span>
-                  <button
-                    onClick={() => setEnabled(!isEnabled)}
-                    className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${
-                      isEnabled ? "bg-neon-purple" : "bg-gray-600"
-                    }`}
-                  >
-                    <div
-                      className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform duration-300 ${
-                        isEnabled ? "translate-x-7" : "translate-x-1"
-                      }`}
-                    />
-                  </button>
-                </label>
-              </div>
-
-              {/* Record Button */}
-              <NeonBorder color="gradient" rounded="full">
-                <button
-                  onClick={toggleRecording}
-                  className={cn(
-                    "p-6 rounded-full transition-all duration-300",
-                    isRecording 
-                      ? "bg-red-500/20 hover:bg-red-500/30" 
-                      : "bg-background hover:bg-white/5"
-                  )}
-                >
-                  {isRecording ? (
-                    <Mic className="w-8 h-8 text-red-500 animate-pulse" />
-                  ) : (
-                    <MicOff className="w-8 h-8" />
-                  )}
-                </button>
-              </NeonBorder>
-
-              <p className="text-sm text-gray-400 text-center">
-                {isRecording 
-                  ? "Listening... Click to stop" 
-                  : "Click to start voice input"
-                }
-              </p>
-            </div>
-          </GlassmorphismCard>
-        </div>
-
-        {/* Conversation & Prompts */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Quick Prompts */}
-          <GlassmorphismCard variant="medium" className="p-6">
-            <h3 className="text-xl font-semibold mb-4">Quick Actions</h3>
-            <div className="grid grid-cols-2 gap-4">
-              {coachingPrompts.map((prompt) => (
-                <button
-                  key={prompt.title}
-                  onClick={() => handlePromptSelect(prompt.prompt)}
-                  className="p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 text-left group"
-                >
-                  <prompt.icon className={cn("w-6 h-6 mb-2", prompt.color)} />
-                  <h4 className="font-medium mb-1">{prompt.title}</h4>
-                  <p className="text-xs text-gray-400">
-                    {prompt.prompt}
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0">
+          {/* Left Sidebar - Coach Info */}
+          <div className="lg:col-span-3 space-y-4 overflow-y-auto">
+            <GlassmorphismCard variant="single" className="p-6">
+              <div className="flex flex-col items-center space-y-4">
+                <div className="relative">
+                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 p-1">
+                    <div className="w-full h-full rounded-full bg-white dark:bg-gray-900 flex items-center justify-center">
+                      <AICoachAvatar
+                        isSpeaking={isSpeaking}
+                        isListening={false}
+                        size="sm"
+                      />
+                    </div>
+                  </div>
+                  <div className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-white dark:border-gray-900 ${
+                    isSpeaking ? "bg-green-500" : isLoading ? "bg-yellow-500" : "bg-gray-400"
+                  }`} />
+                </div>
+                
+                <div className="text-center">
+                  <h3 className="font-semibold text-gray-900 dark:text-white">
+                    Alex - Your AI Coach
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {isSpeaking ? "Speaking..." : isLoading ? "Thinking..." : "Ready to help"}
                   </p>
-                </button>
-              ))}
-            </div>
-          </GlassmorphismCard>
-
-          {/* Voice Player */}
-          {currentAudioUrl && (
-            <VoicePlayer
-              audioUrl={currentAudioUrl}
-              onEnded={() => {
-                setSpeaking(false)
-                setCurrentAudioUrl(null)
-              }}
-            />
-          )}
-
-          {/* Conversation History */}
-          <GlassmorphismCard variant="heavy" className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-semibold">Conversation</h3>
-              <button className="p-2 rounded-lg hover:bg-white/10 transition-all">
-                <Settings className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="space-y-4 max-h-96 overflow-y-auto">
-              {/* Sample conversation */}
-              <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-neon-blue to-neon-purple p-[1px] flex-shrink-0">
-                  <div className="w-full h-full rounded-full bg-background flex items-center justify-center">
-                    <span className="text-xs">You</span>
+                  <div className="flex items-center justify-center gap-2 mt-2">
+                    <MessageSquare className="w-4 h-4 text-gray-400" />
+                    <span className="text-xs text-gray-500">{messages.length} messages</span>
                   </div>
                 </div>
-                <div className="flex-1 p-3 rounded-lg bg-white/5">
-                  <p className="text-sm">
-                    What skills should I focus on for AI engineering?
-                  </p>
+              </div>
+            </GlassmorphismCard>
+
+            {/* Voice Player */}
+            {currentAudioUrl && (
+              <VoicePlayer
+                audioUrl={currentAudioUrl}
+                onEnded={() => {
+                  setSpeaking(false)
+                  setCurrentAudioUrl(null)
+                }}
+              />
+            )}
+
+            {/* Session Stats */}
+            <GlassmorphismCard className="p-4">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Session Time</span>
+                  <span className="text-sm font-medium">{Math.floor(messages.length * 1.5)} min</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Topics</span>
+                  <span className="text-sm font-medium">{Math.ceil(messages.length / 3)}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Insights</span>
+                  <span className="text-sm font-medium">{recommendations.skills.length}</span>
                 </div>
               </div>
+            </GlassmorphismCard>
+          </div>
 
-              <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-neon-purple to-neon-pink flex-shrink-0 flex items-center justify-center">
-                  <Sparkles className="w-4 h-4" />
-                </div>
-                <div className="flex-1 p-3 rounded-lg bg-gradient-to-r from-neon-purple/10 to-neon-pink/10 border border-white/10">
-                  <p className="text-sm">
-                    For AI engineering, I recommend focusing on these key areas:
-                    Python programming, machine learning fundamentals, deep learning
-                    frameworks like TensorFlow or PyTorch, and understanding of
-                    natural language processing...
-                  </p>
-                </div>
-              </div>
-            </div>
+          {/* Center - Chat Interface */}
+          <div className="lg:col-span-6 min-h-0">
+            <GlassmorphismCard variant="single" className="h-full flex flex-col p-0 overflow-hidden">
+              <ChatInterface
+                messages={messages}
+                onSendMessage={handleSendMessage}
+                isLoading={isLoading}
+                suggestedPrompts={messages.length === 0 ? suggestedPrompts : []}
+                enableVoice={isEnabled}
+                className="h-full"
+              />
+            </GlassmorphismCard>
+          </div>
 
-            {/* Input Area */}
-            <div className="mt-4">
-              <NeonBorder color="gradient" rounded="lg">
-                <div className="flex items-center gap-3 p-3">
-                  <input
-                    type="text"
-                    placeholder="Type a message or use voice input..."
-                    className="flex-1 bg-transparent outline-none text-sm"
-                    value={selectedPrompt}
-                    onChange={(e) => setSelectedPrompt(e.target.value)}
-                  />
-                  <GradientButton size="sm" variant="primary">
-                    Send
-                  </GradientButton>
-                </div>
-              </NeonBorder>
-            </div>
-          </GlassmorphismCard>
+          {/* Right Sidebar - Smart Suggestions */}
+          <div className="lg:col-span-3 min-h-0 overflow-y-auto">
+            <SmartSuggestions
+              skillRecommendations={recommendations.skills}
+              pathRecommendations={recommendations.paths}
+              nextAction={recommendations.nextAction}
+              isLoading={isLoadingRecommendations}
+              onRefresh={loadRecommendations}
+              onSelectSkill={(skill) => {
+                const prompt = `Tell me more about learning ${skill.skill.name} and why it's important for my career`
+                handleSendMessage(prompt)
+              }}
+              onSelectPath={(path) => {
+                const prompt = `Create a detailed study plan for: ${path.title}`
+                handleSendMessage(prompt)
+              }}
+            />
+          </div>
         </div>
-      </div>
     </div>
   )
-}
-
-function cn(...classes: (string | boolean | undefined)[]) {
-  return classes.filter(Boolean).join(" ")
 }

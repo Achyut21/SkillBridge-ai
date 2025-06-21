@@ -1,37 +1,32 @@
-import { NextResponse } from "next/server"
+import { NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
 
 export async function GET() {
-  const configs = {
-    google: {
-      clientId: !!process.env.GOOGLE_CLIENT_ID,
-      clientSecret: !!process.env.GOOGLE_CLIENT_SECRET,
-    },
-    nextAuth: {
-      secret: !!process.env.NEXTAUTH_SECRET,
-      url: process.env.NEXTAUTH_URL || "Not set",
-    },
-    openai: {
-      apiKey: !!process.env.OPENAI_API_KEY,
-    },
-    elevenlabs: {
-      apiKey: !!process.env.ELEVENLABS_API_KEY,
-      voiceId: process.env.ELEVENLABS_VOICE_ID || "Not set",
-    },
-    database: {
-      url: !!process.env.DATABASE_URL,
-    },
-    uclone: {
-      serverUrl: process.env.UCLONE_MCP_SERVER_URL || "Not set",
-      apiKey: !!process.env.UCLONE_MCP_API_KEY,
-    },
-    redis: {
-      url: process.env.REDIS_URL || "Not set",
-    },
+  try {
+    // Test database connection
+    const userCount = await prisma.user.count()
+    
+    return NextResponse.json({
+      status: 'success',
+      database: 'connected',
+      userCount,
+      environment: {
+        nodeVersion: process.version,
+        nextAuthUrl: process.env.NEXTAUTH_URL,
+        googleConfigured: !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET),
+        prismaAccelerate: true
+      }
+    })
+  } catch (error) {
+    console.error('Configuration check error:', error)
+    return NextResponse.json({
+      status: 'error',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      environment: {
+        nodeVersion: process.version,
+        nextAuthUrl: process.env.NEXTAUTH_URL,
+        googleConfigured: !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET),
+      }
+    }, { status: 500 })
   }
-
-  return NextResponse.json({
-    status: "Configuration Check",
-    configs,
-    note: "Values shown as boolean for security. Check console for details.",
-  })
 }

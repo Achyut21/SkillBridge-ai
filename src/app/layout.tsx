@@ -1,36 +1,25 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "./globals.css";
-import { Providers } from "@/components/providers";
+"use client"
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+import { Inter } from "next/font/google"
+import "./globals.css"
+import { SessionProvider } from "@/components/providers/session-provider"
+import { Toaster } from "sonner"
 
-export const metadata: Metadata = {
-  title: "SkillBridge AI - Voice-Enabled Professional Development",
-  description: "AI-powered career development platform with voice coaching, real-time market insights, and personalized learning paths",
-};
+const inter = Inter({ subsets: ["latin"] })
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Providers>{children}</Providers>
+    <html lang="en" className="light">
+      <body className={inter.className}>
+        <SessionProvider>
+          {children}
+          <Toaster position="top-right" />
+        </SessionProvider>
       </body>
     </html>
-  );
+  )
 }

@@ -32,6 +32,8 @@ class ElevenLabsService {
       useSpeakerBoost: true
     }
   }: TextToSpeechOptions): Promise<ArrayBuffer> {
+    console.log(`ElevenLabs TTS request - Voice: ${voiceId}, Model: ${modelId}, Text length: ${text.length}`)
+    
     const response = await fetch(`${this.baseUrl}/text-to-speech/${voiceId}`, {
       method: "POST",
       headers: {
@@ -51,10 +53,23 @@ class ElevenLabsService {
     })
 
     if (!response.ok) {
-      throw new Error(`ElevenLabs API error: ${response.statusText}`)
+      const errorText = await response.text()
+      console.error(`ElevenLabs API error: ${response.status} - ${errorText}`)
+      
+      if (response.status === 401) {
+        throw new Error("Invalid ElevenLabs API key (401 Unauthorized)")
+      } else if (response.status === 422) {
+        throw new Error(`Invalid voice ID: ${voiceId}`)
+      } else if (response.status === 429) {
+        throw new Error("ElevenLabs API rate limit exceeded")
+      } else {
+        throw new Error(`ElevenLabs API error: ${response.status} ${response.statusText}`)
+      }
     }
 
-    return response.arrayBuffer()
+    const arrayBuffer = await response.arrayBuffer()
+    console.log(`ElevenLabs TTS success - Audio size: ${arrayBuffer.byteLength} bytes`)
+    return arrayBuffer
   }
 
   async getVoices() {
@@ -94,16 +109,18 @@ class ElevenLabsService {
 }
 
 // Popular voice IDs for easy reference
+// Updated based on available voices in the account
 export const VOICE_IDS = {
-  rachel: "21m00Tcm4TlvDq8ikWAM",     // Calm female
-  domi: "AZnzlk1XvdvUeBnXmlld",       // Energetic female
-  bella: "EXAVITQu4vr4xnSDxMaL",      // Soft female
-  josh: "TxGEqnHWrfWFTfGW9XjX",       // Conversational male
-  arnold: "VR6AewLTigWG4xSOukaG",     // Strong male
-  adam: "pNInz6obpgDQGcFmaJgB",       // Deep male
-  antoni: "ErXwobaYiN019PkySvjV",     // Well-rounded male
-  elli: "MF3mGyEYCl7XYWbV9V6O",       // Young female
-  sam: "yoZ06aMxZJJ28mfd3POQ",        // Raspy male
+  aria: "9BWtsMINqrJLrRacOk9x",       // Aria
+  sarah: "EXAVITQu4vr4xnSDxMaL",      // Sarah (same as bella)
+  laura: "FGY2WhTYpPnrIDTdsKH5",      // Laura
+  charlie: "IKne3meq5aSn9XLyUdCD",    // Charlie
+  george: "JBFqnCBsd6RMkjVDRZzb",     // George
+  // Legacy mappings for compatibility
+  rachel: "9BWtsMINqrJLrRacOk9x",     // Map to Aria
+  bella: "EXAVITQu4vr4xnSDxMaL",      // Sarah
+  josh: "IKne3meq5aSn9XLyUdCD",       // Charlie
+  adam: "JBFqnCBsd6RMkjVDRZzb",       // George
 }
 
 // Singleton instance

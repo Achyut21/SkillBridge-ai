@@ -1,124 +1,179 @@
-"use client"
+'use client';
 
-import { useEffect, useState } from "react"
-import { cn } from "@/lib/utils"
+import { useEffect, useRef, useState } from 'react';
 
-interface Particle {
-  id: number
-  x: number
-  y: number
-  size: number
-  duration: number
-  delay: number
-  color: string
-}
-
-interface AnimatedBackgroundProps {
-  particleCount?: number
-  className?: string
-  colors?: string[]
-  interactive?: boolean
-}
-
-export function AnimatedBackground({
-  particleCount = 30,
-  className,
-  colors = ["#00D9FF", "#7C3AED", "#EC4899", "#06B6D4"],
-  interactive = false,
-}: AnimatedBackgroundProps) {
-  const [particles, setParticles] = useState<Particle[]>([])
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+export function AnimatedBackground() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isClient, setIsClient] = useState(false);
+  const mouseRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
-    const newParticles = Array.from({ length: particleCount }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: Math.random() * 4 + 2,
-      duration: Math.random() * 20 + 10,
-      delay: Math.random() * 20,
-      color: colors[Math.floor(Math.random() * colors.length)],
-    }))
-    setParticles(newParticles)
-  }, [particleCount, colors])
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
-    if (!interactive) return
+    if (!isClient) return;
+    
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({
-        x: (e.clientX / window.innerWidth) * 100,
-        y: (e.clientY / window.innerHeight) * 100,
-      })
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Neural nodes with organic movement
+    const nodes: Array<{
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;      radius: number;
+      connections: Array<{ other: any; distance: number }>;
+      pulsePhase: number;
+      opacity: number;
+    }> = [];
+
+    // Create neural network nodes
+    for (let i = 0; i < 25; i++) {
+      nodes.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: 0,
+        vy: 0,
+        radius: Math.random() * 3 + 2,
+        connections: [],
+        pulsePhase: Math.random() * Math.PI * 2,
+        opacity: 0.3 + Math.random() * 0.4,
+      });
     }
 
-    window.addEventListener("mousemove", handleMouseMove)
-    return () => window.removeEventListener("mousemove", handleMouseMove)
-  }, [interactive])
+    // Mouse interaction
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseRef.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+
+    const animate = () => {
+      // Subtle trail effect
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Update nodes with organic movement
+      nodes.forEach((node, i) => {
+        // Sinusoidal movement for organic feel
+        node.vx += Math.sin(Date.now() * 0.0001 + node.pulsePhase) * 0.01;
+        node.vy += Math.cos(Date.now() * 0.0001 + node.pulsePhase) * 0.01;
+        
+        // Mouse attraction
+        const dx = mouseRef.current.x - node.x;
+        const dy = mouseRef.current.y - node.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < 200) {
+          node.vx += dx * 0.00002;
+          node.vy += dy * 0.00002;
+        }
+        
+        // Apply gentle friction
+        node.vx *= 0.99;
+        node.vy *= 0.99;        
+        // Update position
+        node.x += node.vx;
+        node.y += node.vy;
+        
+        // Soft boundaries with repulsion
+        const margin = 50;
+        if (node.x < margin) node.vx += (margin - node.x) * 0.001;
+        if (node.x > canvas.width - margin) node.vx -= (node.x - canvas.width + margin) * 0.001;
+        if (node.y < margin) node.vy += (margin - node.y) * 0.001;
+        if (node.y > canvas.height - margin) node.vy -= (node.y - canvas.height + margin) * 0.001;
+        
+        // Dynamic connections
+        node.connections = [];
+        nodes.forEach((other, j) => {
+          if (i !== j) {
+            const dx = node.x - other.x;
+            const dy = node.y - other.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < 150) {
+              node.connections.push({ other, distance });
+            }
+          }
+        });
+      });
+      // Draw connections with gradient
+      nodes.forEach(node => {
+        node.connections.forEach(({ other, distance }) => {
+          const gradient = ctx.createLinearGradient(node.x, node.y, other.x, other.y);
+          const opacity = (1 - distance / 150) * 0.2;
+          
+          gradient.addColorStop(0, `rgba(168, 85, 247, ${opacity})`);
+          gradient.addColorStop(0.5, `rgba(147, 51, 234, ${opacity * 0.5})`);
+          gradient.addColorStop(1, `rgba(168, 85, 247, ${opacity})`);
+          
+          ctx.beginPath();
+          ctx.strokeStyle = gradient;
+          ctx.lineWidth = 1;
+          ctx.moveTo(node.x, node.y);
+          ctx.lineTo(other.x, other.y);
+          ctx.stroke();
+        });
+      });
+
+      // Draw nodes with glow effect
+      nodes.forEach(node => {
+        // Outer glow
+        const glowGradient = ctx.createRadialGradient(
+          node.x, node.y, 0,
+          node.x, node.y, node.radius * 4
+        );        glowGradient.addColorStop(0, `rgba(168, 85, 247, ${node.opacity * 0.3})`);
+        glowGradient.addColorStop(1, 'rgba(168, 85, 247, 0)');
+        
+        ctx.beginPath();
+        ctx.fillStyle = glowGradient;
+        ctx.arc(node.x, node.y, node.radius * 4, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Inner node with pulse
+        const pulseScale = 1 + Math.sin(Date.now() * 0.001 + node.pulsePhase) * 0.1;
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(168, 85, 247, ${node.opacity})`;
+        ctx.arc(node.x, node.y, node.radius * pulseScale, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Core bright center
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.arc(node.x, node.y, node.radius * 0.3, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      requestAnimationFrame(animate);
+    };
+
+    animate();
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [isClient]);
+
+  if (!isClient) return null;
 
   return (
-    <div className={cn("fixed inset-0 overflow-hidden pointer-events-none", className)}>
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-radial from-transparent via-background/50 to-background" />
-      
-      {/* Neural network grid */}
-      <svg className="absolute inset-0 w-full h-full opacity-10">
-        <defs>
-          <pattern id="neural-grid" width="50" height="50" patternUnits="userSpaceOnUse">
-            <circle cx="25" cy="25" r="1" fill="currentColor" className="text-neon-blue" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#neural-grid)" />
-      </svg>
-      
-      {/* Floating particles */}
-      {particles.map((particle) => (
-        <div
-          key={particle.id}
-          className="absolute rounded-full animate-float"
-          style={{
-            left: `${particle.x}%`,
-            top: `${particle.y}%`,
-            width: `${particle.size}px`,
-            height: `${particle.size}px`,
-            background: particle.color,
-            boxShadow: `0 0 ${particle.size * 2}px ${particle.color}`,
-            animationDuration: `${particle.duration}s`,
-            animationDelay: `${particle.delay}s`,
-            transform: interactive
-              ? `translate(${(mousePosition.x - particle.x) * 0.1}px, ${
-                  (mousePosition.y - particle.y) * 0.1
-                }px)`
-              : undefined,
-            transition: interactive ? "transform 0.3s ease-out" : undefined,
-          }}
-        />
-      ))}
-      
-      {/* Neural connections */}
-      <svg className="absolute inset-0 w-full h-full">
-        {particles.slice(0, 10).map((p1, i) =>
-          particles.slice(i + 1, i + 3).map((p2) => (
-            <line
-              key={`${p1.id}-${p2.id}`}
-              x1={`${p1.x}%`}
-              y1={`${p1.y}%`}
-              x2={`${p2.x}%`}
-              y2={`${p2.y}%`}
-              stroke="url(#neural-gradient)"
-              strokeWidth="0.5"
-              opacity="0.2"
-              className="animate-pulse"
-            />
-          ))
-        )}
-        <defs>
-          <linearGradient id="neural-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#00D9FF" />
-            <stop offset="100%" stopColor="#7C3AED" />
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
-  )
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 z-0 opacity-30 dark:opacity-50"
+      style={{ pointerEvents: 'none' }}
+    />
+  );
 }

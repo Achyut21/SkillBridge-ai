@@ -26,8 +26,8 @@ export default function SetupPage() {
   ]
 
   return (
-    <div className="min-h-screen gradient-bg p-8">
-      <AnimatedBackground particleCount={20} />
+    <div className="min-h-screen bg-background p-8">
+      <AnimatedBackground />
       
       <div className="max-w-4xl mx-auto relative z-10">
         <h1 className="text-5xl font-bold gradient-text mb-8 text-center">

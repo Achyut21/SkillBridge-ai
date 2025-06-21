@@ -1,0 +1,59 @@
+/* Voice Coach Page Layout Fixes */
+
+/* Ensure only one scrollbar for the entire page */
+.voice-coach-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Prevent double scrollbars on grid items */
+.voice-coach-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 1.5rem;
+  min-height: 0;
+  flex: 1;
+}
+
+/* Ensure sidebars don't create their own scrollbars unless needed */
+.voice-coach-sidebar {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+}
+
+.voice-coach-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.voice-coach-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.voice-coach-sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.3);
+  border-radius: 3px;
+}
+
+/* Chat interface should fill its container */
+.voice-coach-chat {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+}
+
+/* Hide scrollbar on main page if not needed */
+html {
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+/* Ensure dashboard main content doesn't create unnecessary scrollbars */
+.dashboard-main-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
