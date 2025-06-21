@@ -1,5 +1,7 @@
 "use client"
 
+import { ConfigCheck } from "@/components/config-check"
+
 export default function Home() {
   return (
     <div className="min-h-screen gradient-bg relative overflow-hidden">
@@ -70,7 +72,7 @@ export default function Home() {
         </div>
 
         {/* Tech Stack Verification */}
-        <div className="glass rounded-2xl p-8 max-w-4xl mx-auto">
+        <div className="glass rounded-2xl p-8 max-w-4xl mx-auto mb-12">
           <h2 className="text-3xl font-bold mb-6 gradient-text">
             Tech Stack Verified ✅
           </h2>
@@ -96,11 +98,38 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Configuration Status */}
+        <div className="max-w-4xl mx-auto mb-12">
+          <ConfigCheck />
+        </div>
+
         {/* Interactive Button Demo */}
-        <div className="mt-20 text-center">
-          <button className="px-8 py-4 bg-gradient-to-r from-neon-blue to-neon-purple rounded-full font-semibold text-lg hover:scale-110 transition-all duration-300 animate-glow">
-            Ready for Phase 2: Authentication & Core UI
-          </button>
+        <div className="mt-20 text-center space-y-4">
+          <div className="flex gap-4 justify-center flex-wrap">
+            <button 
+              onClick={() => window.location.href = '/auth/login'}
+              className="px-8 py-4 bg-gradient-to-r from-neon-blue to-neon-purple rounded-full font-semibold text-lg hover:scale-110 transition-all duration-300 animate-glow"
+            >
+              Sign In
+            </button>
+            <button 
+              onClick={() => window.location.href = '/auth/register'}
+              className="px-8 py-4 bg-gradient-to-r from-neon-purple to-neon-pink rounded-full font-semibold text-lg hover:scale-110 transition-all duration-300 animate-glow"
+            >
+              Sign Up
+            </button>
+          </div>
+          <p className="text-gray-400 mt-8">
+            ✅ Phase 3 Complete: Dashboard Layout & Voice Integration
+          </p>
+          <div className="mt-4">
+            <button 
+              onClick={() => window.location.href = '/setup'}
+              className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full font-medium text-base hover:scale-105 transition-all duration-300"
+            >
+              📋 Setup Guide
+            </button>
+          </div>
         </div>
       </main>
     </div>
