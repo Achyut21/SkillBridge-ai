@@ -429,10 +429,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact & Support
 
-- **Website**: [skillbridge-ai.vercel.app](https://skillbridge-ai.vercel.app)
-- **Email**: contact@skillbridge-ai.com
-- **GitHub**: [@Achyut21](https://github.com/Achyut21)
-- **Twitter**: [@skillbridge_ai](https://twitter.com/skillbridge_ai)
+- **Developer**: Achyut Katiyar
+- **Website**: [achyutkatiyar.com](https://achyutkatiyar.com)
+- **Email**: achyutkatiyar21@gmail.com
+- **GitHub**: [@achyut21](https://github.com/achyut21)
+- **LinkedIn**: [achyutkatiyar2103](https://linkedin.com/in/achyutkatiyar2103)
+- **Phone**: +1 (857) 576-6733
 
 ---
 

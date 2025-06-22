@@ -2,6 +2,11 @@
   "name": "skillbridge-ai",
   "version": "0.1.0",
   "private": true,
+  "author": {
+    "name": "Achyut Katiyar",
+    "email": "achyutkatiyar21@gmail.com",
+    "url": "https://achyutkatiyar.com"
+  },
   "overrides": {
     "react": "18.3.1",
     "react-dom": "18.3.1",

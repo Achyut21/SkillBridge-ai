@@ -10,7 +10,8 @@ import {
   MapPin,
   Phone,
   ArrowRight,
-  Heart
+  Heart,
+  Globe
 } from 'lucide-react';
 import { GradientButton } from '@/components/custom/gradient-button';
 
@@ -42,9 +43,9 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { icon: Github, href: '#', label: 'GitHub' },
-  { icon: Twitter, href: '#', label: 'Twitter' },
-  { icon: Linkedin, href: '#', label: 'LinkedIn' },
+  { icon: Github, href: 'https://github.com/achyut21', label: 'GitHub' },
+  { icon: Linkedin, href: 'https://linkedin.com/in/achyutkatiyar2103', label: 'LinkedIn' },
+  { icon: Globe, href: 'https://achyutkatiyar.com', label: 'Website' },
 ];
 
 export function ModernFooter() {
@@ -178,15 +179,19 @@ export function ModernFooter() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 dark:text-gray-400">
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
-                <span>contact@skillbridge.ai</span>
+                <a href="mailto:achyutkatiyar21@gmail.com" className="hover:text-purple-600 transition-colors">
+                  achyutkatiyar21@gmail.com
+                </a>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4" />
-                <span>+1 (555) 123-4567</span>
+                <a href="tel:+18575766733" className="hover:text-purple-600 transition-colors">
+                  +1 (857) 576-6733
+                </a>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4" />
-                <span>San Francisco, CA</span>
+                <span>Boston, Massachusetts, USA</span>
               </div>
             </div>
           </div>
@@ -198,7 +203,7 @@ export function ModernFooter() {
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              © {currentYear} SkillBridge AI. All rights reserved.
+              © {currentYear} SkillBridge AI by Achyut Katiyar. All rights reserved.
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1">
               Made with <Heart className="h-3 w-3 text-purple-600 fill-purple-600" /> for the 2025 Dream AI Hackathon
