@@ -1,7 +1,7 @@
 {
   "name": "SkillBridge AI - Professional Development Platform",
   "short_name": "SkillBridge AI",
-  "description": "Voice-enabled AI-powered platform for professional development with real-time market insights",
+  "description": "Voice-enabled AI-powered platform for professional development with real-time market insights, personalized learning paths, and intelligent career guidance",
   "start_url": "/dashboard",
   "display": "standalone",
   "background_color": "#0f0f23",
