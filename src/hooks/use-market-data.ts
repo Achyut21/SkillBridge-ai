@@ -85,12 +85,14 @@ export function useMarketData(options: UseMarketDataOptions = {}): UseMarketData
       dispatch(toggleRealtimeUpdates(true))
 
       // Subscribe to real-time updates
-      const unsubscribe = mcpConnector.streamUpdates((update) => {
+      const unsubscribe: any = mcpConnector.streamUpdates((update: any) => {
         handleRealtimeUpdate(update)
       })
 
       // Store unsubscribe function for cleanup
-      (window as any).__mcpUnsubscribe = unsubscribe
+      if (unsubscribe) {
+        (window as any).__mcpUnsubscribe = unsubscribe
+      }
     } catch (error) {
       console.error("Failed to connect to MCP:", error)
       dispatch(setError("Failed to connect to real-time market data"))

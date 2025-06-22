@@ -5,7 +5,8 @@ import {
   Skill, 
   SessionContext,
   LearningStyle,
-  SkillLevel
+  SkillLevel,
+  Difficulty
 } from "@/lib/types"
 
 // Utility function to generate unique IDs
@@ -261,7 +262,7 @@ class OpenAIService {
       targetRole: options.targetRole,
       skills: options.currentSkills,
       estimatedDuration: options.timeframe,
-      difficulty: "MEDIUM",
+      difficulty: Difficulty.MEDIUM,
       careerOutlook: {
         averageSalary: 0,
         jobGrowth: 0,

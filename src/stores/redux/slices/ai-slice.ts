@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { ChatMessage } from '@/services/ai/openai';
-import type { PersonalizedRecommendation } from '@/services/ai/recommendation-engine';
+import type { ChatMessage, SkillRecommendation } from '@/lib/types';
 
 interface AIState {
   // Chat state
@@ -9,7 +8,7 @@ interface AIState {
   error: string | null;
   
   // Recommendations state
-  recommendations: PersonalizedRecommendation[];
+  recommendations: SkillRecommendation[];
   skillAssessment: {
     currentLevel: string;
     strengths: string[];
@@ -60,16 +59,16 @@ const aiSlice = createSlice({
     },
     
     // Recommendations actions
-    setRecommendations: (state, action: PayloadAction<PersonalizedRecommendation[]>) => {
+    setRecommendations: (state, action: PayloadAction<SkillRecommendation[]>) => {
       state.recommendations = action.payload;
     },
     updateRecommendationPriority: (
       state,
       action: PayloadAction<{ id: string; priority: 'high' | 'medium' | 'low' }>
     ) => {
-      const rec = state.recommendations.find(r => r.id === action.payload.id);
+      const rec = state.recommendations.find((r: SkillRecommendation) => (r as any).id === action.payload.id);
       if (rec) {
-        rec.priority = action.payload.priority;
+        (rec as any).priority = action.payload.priority;
       }
     },
     

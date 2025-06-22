@@ -291,7 +291,7 @@ export function SkillRadar({
             Targets
           </GradientButton>
           <GradientButton
-            variant={showLegend ? "default" : "outline"}
+            variant={showLegend ? "primary" : "outline"}
             size="sm"
             onClick={() => setShowLegend(!showLegend)}
           >
@@ -505,7 +505,7 @@ export function SkillRadar({
                     <Badge 
                       variant="outline" 
                       className="text-xs"
-                      style={{ borderColor: categoryColors[skill.category] || "#6B7280" }}
+                      style={{ borderColor: categoryColors[skill.category as keyof typeof categoryColors] || "#6B7280" }}
                     >
                       {skill.category}
                     </Badge>

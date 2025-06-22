@@ -50,7 +50,7 @@ export function useDebouncedCallback<T extends (...args: any[]) => any>(
     };
   }, [debouncedFn]);
 
-  return debouncedFn as T;
+  return debouncedFn as unknown as T;
 }
 
 // Throttled callback hook
@@ -70,7 +70,7 @@ export function useThrottledCallback<T extends (...args: any[]) => any>(
     };
   }, [throttledFn]);
 
-  return throttledFn as T;
+  return throttledFn as unknown as T;
 }
 
 // Intersection Observer hook for lazy loading
@@ -328,7 +328,7 @@ export function usePerformanceBudget() {
       const fidObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         entries.forEach(entry => {
-          setMetrics(prev => ({ ...prev, fid: entry.processingStart - entry.startTime }));
+          setMetrics(prev => ({ ...prev, fid: (entry as any).processingStart - entry.startTime }));
         });
       });
       fidObserver.observe({ entryTypes: ['first-input'] });

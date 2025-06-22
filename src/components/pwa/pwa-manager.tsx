@@ -171,9 +171,8 @@ export function PWAManager({
           body,
           icon: '/icons/icon-192x192.png',
           badge: '/icons/badge-72x72.png',
-          vibrate: [200, 100, 200],
           tag: 'learning-reminder'
-        });
+        } as NotificationOptions);
       }, delay);
     }
   };
@@ -316,9 +315,8 @@ export function usePWA() {
             body,
             icon: '/icons/icon-192x192.png',
             badge: '/icons/badge-72x72.png',
-            vibrate: [200, 100, 200],
             tag: 'learning-reminder'
-          });
+          } as NotificationOptions);
         }, delay);
       });
     }
@@ -332,7 +330,7 @@ export function usePWA() {
       // This would typically use IndexedDB
       console.log('[PWA] Scheduling background sync:', data);
       
-      return registration.sync.register('progress-sync');
+      return (registration as any).sync?.register('progress-sync');
     }
   };
 

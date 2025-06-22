@@ -7,7 +7,8 @@ import {
   JobMarketData,
   UserProgress,
   LearningAnalytics,
-  SkillLevel
+  SkillLevel,
+  LearningStyle
 } from "@/lib/types"
 import { getOpenAIService } from "./openai"
 import { getMarketAnalyzer } from "../data/market-analyzer"
@@ -93,7 +94,7 @@ class RecommendationEngine {
         targetRole: context.targetRole,
         currentSkills: context.currentSkills,
         timeframe: 24, // 6 months default
-        learningStyle: "VISUAL", // TODO: Get from user preferences
+        learningStyle: LearningStyle.VISUAL, // TODO: Get from user preferences
         budget: 1000 // TODO: Get from user preferences
       })
       paths.push(primaryPath)
@@ -304,7 +305,7 @@ class RecommendationEngine {
       targetRole: role,
       currentSkills: context.currentSkills,
       timeframe: 24,
-      learningStyle: "VISUAL",
+      learningStyle: LearningStyle.VISUAL,
       budget: 1000
     })
   }

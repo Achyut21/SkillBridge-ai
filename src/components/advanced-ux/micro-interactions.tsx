@@ -298,7 +298,6 @@ export function MicroButton({
       onMouseLeave={() => setIsPressed(false)}
       onClick={onClick}
     >
-    >
       <motion.span
         initial={false}
         animate={{
