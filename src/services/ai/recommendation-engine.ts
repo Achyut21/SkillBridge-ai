@@ -192,9 +192,13 @@ class RecommendationEngine {
     }
 
     // Analyze patterns from history
-    const completedMilestones = history.flatMap(h => 
-      h.milestones.filter(m => m.achievedAt)
-    )
+    const completedMilestones = history.flatMap(h => {
+      // Ensure milestones is an array before filtering
+      if (!h.milestones || !Array.isArray(h.milestones)) {
+        return []
+      }
+      return h.milestones.filter(m => m.achievedAt)
+    })
     
     return {
       preferredDifficulty: "MEDIUM", // TODO: Calculate from history

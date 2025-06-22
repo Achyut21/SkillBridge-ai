@@ -24,10 +24,21 @@ self.addEventListener('install', (event) => {
   
   event.waitUntil(
     Promise.all([
-      // Cache static assets
-      caches.open(STATIC_CACHE).then((cache) => {
+      // Cache static assets with error handling
+      caches.open(STATIC_CACHE).then(async (cache) => {
         console.log('[ServiceWorker] Caching static assets');
-        return cache.addAll(STATIC_ASSETS);
+        
+        // Try to cache each asset individually to handle failures
+        const cachePromises = STATIC_ASSETS.map(async (asset) => {
+          try {
+            await cache.add(asset);
+            console.log('[ServiceWorker] Cached:', asset);
+          } catch (error) {
+            console.warn('[ServiceWorker] Failed to cache:', asset, error);
+          }
+        });
+        
+        return Promise.all(cachePromises);
       }),
       
       // Skip waiting to activate immediately
