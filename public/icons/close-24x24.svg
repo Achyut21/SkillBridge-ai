@@ -1,0 +1,16 @@
+<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a78bfa;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="24" height="24" rx="2.4000000000000004" fill="url(#grad)"/>
+  <circle cx="7.199999999999999" cy="7.199999999999999" r="1.92" fill="white" opacity="0.8"/>
+  <circle cx="16.799999999999997" cy="7.199999999999999" r="1.92" fill="white" opacity="0.8"/>
+  <circle cx="12" cy="16.799999999999997" r="1.92" fill="white" opacity="0.8"/>
+  <line x1="7.199999999999999" y1="7.199999999999999" x2="16.799999999999997" y2="7.199999999999999" stroke="white" stroke-width="0.48" opacity="0.6"/>
+  <line x1="7.199999999999999" y1="7.199999999999999" x2="12" y2="16.799999999999997" stroke="white" stroke-width="0.48" opacity="0.6"/>
+  <line x1="16.799999999999997" y1="7.199999999999999" x2="12" y2="16.799999999999997" stroke="white" stroke-width="0.48" opacity="0.6"/>
+  <text x="12" y="21.6" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="1.92" font-weight="bold">AI</text>
+</svg>
