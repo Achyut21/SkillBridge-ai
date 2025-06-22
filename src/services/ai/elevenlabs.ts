@@ -32,7 +32,7 @@ class ElevenLabsService {
       useSpeakerBoost: true
     }
   }: TextToSpeechOptions): Promise<ArrayBuffer> {
-    console.log(`ElevenLabs TTS request - Voice: ${voiceId}, Model: ${modelId}, Text length: ${text.length}`)
+    // console.log(`ElevenLabs TTS request - Voice: ${voiceId}, Model: ${modelId}, Text length: ${text.length}`)
     
     const response = await fetch(`${this.baseUrl}/text-to-speech/${voiceId}`, {
       method: "POST",
@@ -68,7 +68,7 @@ class ElevenLabsService {
     }
 
     const arrayBuffer = await response.arrayBuffer()
-    console.log(`ElevenLabs TTS success - Audio size: ${arrayBuffer.byteLength} bytes`)
+    // console.log(`ElevenLabs TTS success - Audio size: ${arrayBuffer.byteLength} bytes`)
     return arrayBuffer
   }
 

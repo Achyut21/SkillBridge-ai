@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     const includeMarketData = searchParams.get("includeMarketData") === "true"
 
     // Fetch user data with their skills
-    const user = await prisma.user.findUnique({
+    const user = await (prisma.user.findUnique as any)({
       where: { email: session.user.email },
       include: {
         userSkills: {
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Prepare context for recommendation engine
-    const currentSkills = user.userSkills.map(us => ({
+    const currentSkills = user.userSkills.map((us: any) => ({
       ...us.skill,
       level: us.currentLevel as SkillLevel
     }))
@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
     const { targetRole, timeframe, preferences } = body
 
     // Update user profile with new preferences
-    const user = await prisma.user.findUnique({
+    const user = await (prisma.user.findUnique as any)({
       where: { email: session.user.email },
       include: {
         profile: true

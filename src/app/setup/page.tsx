@@ -20,9 +20,9 @@ export default function SetupPage() {
   }
 
   const redirectUris = [
-    "http://localhost:3000/api/auth/callback/google",
-    "http://localhost:3001/api/auth/callback/google",
-    "http://localhost:3002/api/auth/callback/google",
+    "https://your-app.vercel.app/api/auth/callback/google",
+    "https://your-app.vercel.app/api/auth/callback/google",
+    "https://your-app.vercel.app/api/auth/callback/google",
   ]
 
   return (
@@ -146,7 +146,7 @@ export default function SetupPage() {
                   <div className="p-4 space-y-2">
                     <code className="text-sm block">docker-compose up -d postgres</code>
                     <p className="text-xs text-gray-400">
-                      Connection string: postgresql://skillbridge:skillbridge_dev_password@localhost:5432/skillbridge_ai
+                      Connection string: postgresql://skillbridge:skillbridge_dev_password@your-database-host/skillbridge_ai
                     </p>
                   </div>
                 </NeonBorder>

@@ -1,23 +1,36 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '',
-        pathname: '/**',
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        pathname: '**',
       },
       {
         protocol: 'https',
-        hostname: 'lh3.googleusercontent.com',
-        port: '',
-        pathname: '/**',
+        hostname: 'avatars.githubusercontent.com',
+        pathname: '**',
       },
     ],
   },
-  serverExternalPackages: ['@prisma/client', 'prisma'],
-};
+  // Remove standalone output for Vercel
+  // output: 'standalone',
+  
+  // Suppress specific warnings
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '2mb',
+    },
+  },
+  
+  // Handle Prisma in production
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals.push('@prisma/client')
+    }
+    return config
+  },
+}
 
-export default nextConfig;
+export default nextConfig

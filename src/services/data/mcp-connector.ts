@@ -53,7 +53,7 @@ class MCPConnector {
         this.websocket = new WebSocket(`${this.endpoint}?apiKey=${this.apiKey}`)
 
         this.websocket.onopen = () => {
-          console.log("Connected to Uclone MCP server")
+    // console.log("Connected to Uclone MCP server")
           this.reconnectAttempts = 0
           this.subscribeToChannels()
           resolve()
@@ -65,7 +65,7 @@ class MCPConnector {
         }
 
         this.websocket.onclose = () => {
-          console.log("MCP connection closed")
+    // console.log("MCP connection closed")
           this.handleReconnect()
         }
 
@@ -242,23 +242,23 @@ class MCPConnector {
         this.handleMarketInsight(data.payload)
         break
       default:
-        console.log("Unknown message type:", data.type)
+    // console.log("Unknown message type:", data.type)
     }
   }
 
   private handleJobUpdate(payload: any): void {
     // Process job updates
-    console.log("New job listing:", payload)
+    // console.log("New job listing:", payload)
   }
 
   private handleSkillTrend(payload: any): void {
     // Process skill trend updates
-    console.log("Skill trend update:", payload)
+    // console.log("Skill trend update:", payload)
   }
 
   private handleMarketInsight(payload: any): void {
     // Process market insights
-    console.log("Market insight:", payload)
+    // console.log("Market insight:", payload)
   }
 
   private handleReconnect(): void {
@@ -270,7 +270,7 @@ class MCPConnector {
     this.reconnectAttempts++
     const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000)
 
-    console.log(`Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts})`)
+    // console.log(`Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts})`)
     
     setTimeout(() => {
       this.connect().catch(console.error)

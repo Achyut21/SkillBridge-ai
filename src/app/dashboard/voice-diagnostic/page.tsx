@@ -61,7 +61,7 @@ export default function VoiceDiagnosticPage() {
       // Test 2: Generate test audio with detailed logging
       const testText = "Hello! This is a voice diagnostic test. If you can hear this message, the voice integration is working correctly."
       
-      console.log("Generating voice with ElevenLabs...")
+    // console.log("Generating voice with ElevenLabs...")
       const voiceResponse = await fetch("/api/ai/voice", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -72,7 +72,7 @@ export default function VoiceDiagnosticPage() {
       })
 
       const voiceData = await voiceResponse.json()
-      console.log("Voice API response:", voiceData)
+    // console.log("Voice API response:", voiceData)
       
       if (!voiceResponse.ok || !voiceData.success) {
         results.voiceGeneration = false
@@ -83,13 +83,13 @@ export default function VoiceDiagnosticPage() {
 
       // Test 3: Create audio using enhanced method
       if (voiceData.audio) {
-        console.log("Creating audio from base64...")
+    // console.log("Creating audio from base64...")
         const audio = createAudioFromBase64(voiceData.audio, voiceData.mimeType)
         
         // Wait for audio to load
         await new Promise((resolve, reject) => {
           audio.onloadeddata = () => {
-            console.log("Audio loaded successfully, duration:", audio.duration)
+    // console.log("Audio loaded successfully, duration:", audio.duration)
             resolve(true)
           }
           audio.onerror = (e) => {

@@ -1,10 +1,10 @@
 // Enhanced voice diagnostic utility
 export async function testVoiceGeneration(text: string = "Hello, this is a test of the voice system.") {
-  console.log("🎙️ Starting voice generation test...");
+    // console.log("🎙️ Starting voice generation test...");
   
   try {
     // Test 1: Direct API call
-    console.log("1. Testing direct voice API...");
+    // console.log("1. Testing direct voice API...");
     const response = await fetch("/api/ai/voice", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -15,7 +15,7 @@ export async function testVoiceGeneration(text: string = "Hello, this is a test 
     });
 
     const data = await response.json();
-    console.log("API Response:", data);
+    // console.log("API Response:", data);
 
     if (!response.ok || !data.success) {
       console.error("❌ Voice API failed:", data.error);
@@ -23,16 +23,16 @@ export async function testVoiceGeneration(text: string = "Hello, this is a test 
     }
 
     // Test 2: Create audio element
-    console.log("2. Creating audio element...");
+    // console.log("2. Creating audio element...");
     const audioUrl = `data:${data.mimeType};base64,${data.audio}`;
     const audio = new Audio(audioUrl);
     
     // Test 3: Check if audio can load
-    console.log("3. Loading audio...");
+    // console.log("3. Loading audio...");
     await new Promise((resolve, reject) => {
       audio.onloadeddata = () => {
-        console.log("✅ Audio loaded successfully");
-        console.log("Duration:", audio.duration, "seconds");
+    // console.log("✅ Audio loaded successfully");
+    // console.log("Duration:", audio.duration, "seconds");
         resolve(true);
       };
       audio.onerror = (e) => {
@@ -42,14 +42,14 @@ export async function testVoiceGeneration(text: string = "Hello, this is a test 
     });
 
     // Test 4: Try to play
-    console.log("4. Attempting to play audio...");
+    // console.log("4. Attempting to play audio...");
     try {
       await audio.play();
-      console.log("✅ Audio playing successfully");
+    // console.log("✅ Audio playing successfully");
     } catch (playError) {
       console.error("❌ Play error:", playError);
-      console.log("💡 This might be due to browser autoplay restrictions.");
-      console.log("   Click anywhere on the page and try again.");
+    // console.log("💡 This might be due to browser autoplay restrictions.");
+    // console.log("   Click anywhere on the page and try again.");
     }
 
     return { audio, audioUrl };
@@ -61,7 +61,7 @@ export async function testVoiceGeneration(text: string = "Hello, this is a test 
 
 // Browser compatibility check
 export function checkAudioSupport() {
-  console.log("🔍 Checking browser audio support...");
+    // console.log("🔍 Checking browser audio support...");
   
   const audio = new Audio();
   const formats = {
@@ -71,13 +71,13 @@ export function checkAudioSupport() {
     webm: audio.canPlayType('audio/webm')
   };
   
-  console.log("Audio format support:", formats);
+    // console.log("Audio format support:", formats);
   
   // Check autoplay policy
   if ('getAutoplayPolicy' in navigator) {
     // @ts-ignore
     navigator.getAutoplayPolicy('mediaelement').then((policy: string) => {
-      console.log("Autoplay policy:", policy);
+    // console.log("Autoplay policy:", policy);
     });
   }
   
@@ -100,7 +100,7 @@ export function createAudioFromBase64(base64Audio: string, mimeType: string = "a
     const blob = new Blob([byteArray], { type: mimeType });
     const blobUrl = URL.createObjectURL(blob);
     
-    console.log("Created blob URL for audio");
+    // console.log("Created blob URL for audio");
     return new Audio(blobUrl);
   } catch (error) {
     console.error("Failed to create blob URL, falling back to data URL:", error);

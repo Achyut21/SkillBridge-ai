@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
       : VOICE_IDS.rachel
 
     try {
-      console.log(`Generating voice with ElevenLabs - Voice ID: ${selectedVoiceId}, Text length: ${text.length}`)
+    // console.log(`Generating voice with ElevenLabs - Voice ID: ${selectedVoiceId}, Text length: ${text.length}`)
       
       const elevenLabs = getElevenLabsService()
       const audioBuffer = await elevenLabs.textToSpeech({
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         voiceSettings
       })
 
-      console.log(`Voice generated successfully - Buffer size: ${audioBuffer.byteLength} bytes`)
+    // console.log(`Voice generated successfully - Buffer size: ${audioBuffer.byteLength} bytes`)
 
       // Return audio as base64
       const base64Audio = Buffer.from(audioBuffer).toString("base64")

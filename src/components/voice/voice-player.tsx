@@ -78,14 +78,14 @@ export function VoicePlayer({ audioUrl, onEnded, className }: VoicePlayerProps) 
       if (playPromise !== undefined) {
         playPromise
           .then(() => {
-            console.log("Audio playback started")
+    // console.log("Audio playback started")
             setIsPlaying(true)
           })
           .catch(err => {
             console.error("Failed to auto-play:", err)
             // Show user-friendly message
             if (err.name === 'NotAllowedError') {
-              console.log("Browser prevented autoplay. User interaction required.")
+    // console.log("Browser prevented autoplay. User interaction required.")
             }
           })
       }

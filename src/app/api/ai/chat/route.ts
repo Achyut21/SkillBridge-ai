@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get user context
-    const user = await prisma.user.findUnique({
+    const user = await (prisma.user.findUnique as any)({
       where: { email: session.user.email },
       include: {
         profile: true,
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
 
     // Build session context
     const sessionContext: SessionContext = {
-      currentSkills: user.userSkills.map(us => ({
+      currentSkills: user.userSkills.map((us: any) => ({
         ...us.skill,
         level: us.currentLevel as SkillLevel
       })),
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
 
     // Get or create chat session
     const chatSession = sessionId ? 
-      await prisma.chatSession.findUnique({
+      await (prisma.chatSession.findUnique as any)({
         where: { id: sessionId },
         include: {
           messages: {
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
           }
         }
       }) :
-      await prisma.chatSession.create({
+      await (prisma.chatSession.create as any)({
         data: {
           userId: user.id,
           context: sessionContext as any
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
 
     // Prepare messages for OpenAI
     const messages: ChatMessage[] = [
-      ...chatSession.messages.map(msg => ({
+      ...chatSession.messages.map((msg: any) => ({
         id: msg.id,
         role: msg.role as "user" | "assistant",
         content: msg.content,
@@ -259,7 +259,7 @@ export async function GET(request: NextRequest) {
     const sessionId = searchParams.get("sessionId")
     const limit = parseInt(searchParams.get("limit") || "50")
 
-    const user = await prisma.user.findUnique({
+    const user = await (prisma.user.findUnique as any)({
       where: { email: session.user.email }
     })
 
@@ -272,7 +272,7 @@ export async function GET(request: NextRequest) {
 
     if (sessionId) {
       // Get specific session
-      const chatSession = await prisma.chatSession.findFirst({
+      const chatSession = await (prisma.chatSession.findFirst as any)({
         where: {
           id: sessionId,
           userId: user.id
@@ -294,7 +294,7 @@ export async function GET(request: NextRequest) {
 
       return NextResponse.json({
         sessionId: chatSession.id,
-        messages: chatSession.messages.map(msg => ({
+        messages: chatSession.messages.map((msg: any) => ({
           id: msg.id,
           role: msg.role,
           content: msg.content,
@@ -305,7 +305,7 @@ export async function GET(request: NextRequest) {
       })
     } else {
       // Get all sessions
-      const sessions = await prisma.chatSession.findMany({
+      const sessions = await (prisma.chatSession.findMany as any)({
         where: { userId: user.id },
         orderBy: { updatedAt: "desc" },
         take: 10,
@@ -318,7 +318,7 @@ export async function GET(request: NextRequest) {
       })
 
       return NextResponse.json({
-        sessions: sessions.map(session => ({
+        sessions: sessions.map((session: any) => ({
           id: session.id,
           lastMessage: session.messages[0]?.content || "New conversation",
           lastActivity: session.updatedAt,

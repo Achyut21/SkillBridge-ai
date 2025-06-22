@@ -2,9 +2,23 @@ import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 
 const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined
+  prisma: any
 }
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient().$extends(withAccelerate())
+// Create a typed Prisma client that works with Accelerate
+const createPrismaClient = () => {
+  const client = new PrismaClient()
+  
+  // Only use accelerate if we have the proper DATABASE_URL
+  if (process.env.DATABASE_URL?.includes('prisma-data.net')) {
+    return client.$extends(withAccelerate()) as any
+  }
+  
+  return client as any
+}
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma
+export const prisma = globalForPrisma.prisma ?? createPrismaClient()
+
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma
+}
