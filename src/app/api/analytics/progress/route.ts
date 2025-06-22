@@ -56,36 +56,36 @@ export async function GET(req: NextRequest) {
 
     // Calculate analytics
     const totalPaths = learningPaths.length;
-    const completedPaths = learningPaths.filter(path => 
-      path.progress.some(p => p.completionPercentage === 100)
+    const completedPaths = learningPaths.filter((path: any) => 
+      path.progress.some((p: any) => p.completionPercentage === 100)
     ).length;
     
-    const totalHours = recentProgress.reduce((sum, p) => sum + (p.timeSpent || 0), 0);
-    const averageProgress = learningPaths.reduce((sum, path) => {
+    const totalHours = recentProgress.reduce((sum: number, p: any) => sum + (p.timeSpent || 0), 0);
+    const averageProgress = learningPaths.reduce((sum: number, path: any) => {
       const pathProgress = path.progress[0]?.completionPercentage || 0;
       return sum + pathProgress;
     }, 0) / (totalPaths || 1);
 
     // Calculate skill metrics
-    const skillMetrics = userSkills.map(us => ({
+    const skillMetrics = userSkills.map((us: any) => ({
       skillId: us.skillId,
       skillName: us.skill.name,
       proficiency: us.proficiencyLevel,
       hoursInvested: recentProgress
-        .filter(p => p.learningPathId && 
-          learningPaths.find(lp => 
+        .filter((p: any) => p.learningPathId && 
+          learningPaths.find((lp: any) => 
             lp.id === p.learningPathId && 
-            lp.skills.some(s => s.id === us.skillId)
+            lp.skills.some((s: any) => s.id === us.skillId)
           )
         )
-        .reduce((sum, p) => sum + (p.timeSpent || 0), 0)
+        .reduce((sum: number, p: any) => sum + (p.timeSpent || 0), 0)
     }));
 
     // Calculate learning velocity (progress per day)
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     
-    const recentProgressCount = recentProgress.filter(p => 
+    const recentProgressCount = recentProgress.filter((p: any) => 
       new Date(p.updatedAt) > thirtyDaysAgo
     ).length;
     
@@ -110,7 +110,7 @@ export async function GET(req: NextRequest) {
       },
       skillMetrics,
       timeByCategory,
-      recentActivity: recentProgress.slice(0, 10).map(p => ({
+      recentActivity: recentProgress.slice(0, 10).map((p: any) => ({
         date: p.updatedAt,
         timeSpent: p.timeSpent,
         progressMade: p.completionPercentage

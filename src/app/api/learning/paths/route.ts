@@ -69,8 +69,8 @@ export async function GET(request: NextRequest) {
     // Filter by category if specified
     let filteredPaths = learningPaths
     if (category && category !== 'all') {
-      filteredPaths = learningPaths.filter(path =>
-        path.skills.some(pathSkill => 
+      filteredPaths = learningPaths.filter((path: any) =>
+        path.skills.some((pathSkill: any) => 
           pathSkill.skill.category === category
         )
       )
@@ -138,7 +138,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create learning path with transaction
-    const learningPath = await prisma.$transaction(async (tx) => {
+    const learningPath = await prisma.$transaction(async (tx: any) => {
       // Create the main learning path
       const newPath = await tx.learningPath.create({
         data: {

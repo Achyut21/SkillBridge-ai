@@ -111,7 +111,9 @@ export function SmartTooltip({
     }
 
     setTooltipPosition({ x, y });
-    setFinalPosition(pos);
+    if (pos !== 'auto') {
+      setFinalPosition(pos as 'top' | 'bottom' | 'left' | 'right');
+    }
   };
 
   useEffect(() => {
@@ -295,7 +297,7 @@ export function MicroButton({
       onMouseUp={() => setIsPressed(false)}
       onMouseLeave={() => setIsPressed(false)}
       onClick={onClick}
-      {...props}
+    >
     >
       <motion.span
         initial={false}

@@ -250,7 +250,7 @@ export function LearningTimeline({
 
         <div className="flex items-center gap-3">
           <GradientButton
-            variant={showDetails ? "default" : "outline"}
+            variant={showDetails ? "primary" : "outline"}
             size="sm"
             onClick={() => setShowDetails(!showDetails)}
           >
@@ -324,7 +324,7 @@ export function LearningTimeline({
               ].map((filter) => (
                 <GradientButton
                   key={filter.key}
-                  variant={selectedFilter === filter.key ? "default" : "ghost"}
+                  variant={selectedFilter === filter.key ? "primary" : "ghost"}
                   size="sm"
                   onClick={() => setSelectedFilter(filter.key as any)}
                   className="w-full justify-between"

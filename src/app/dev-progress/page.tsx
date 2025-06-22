@@ -107,7 +107,7 @@ export default function DevProgressPage() {
         </h1>
 
         {/* Overall Progress */}
-        <GlassmorphismCard variant="heavy" glow="blue" className="p-8 mb-8">
+        <GlassmorphismCard variant="heavy" className="p-8 mb-8">
           <h2 className="text-2xl font-bold mb-4">Overall Progress</h2>
           <div className="mb-4">
             <div className="flex justify-between text-sm mb-2">
@@ -143,7 +143,7 @@ export default function DevProgressPage() {
             <GlassmorphismCard
               key={phase.number}
               variant="medium"
-              glow={phase.status === "complete" ? "cyan" : "none"}
+              glow={phase.status === "complete"}
               className="p-6"
             >
               <div className="flex items-center justify-between mb-4">
@@ -210,7 +210,7 @@ export default function DevProgressPage() {
         </GlassmorphismCard>
 
         {/* Next Steps */}
-        <GlassmorphismCard variant="medium" glow="purple" className="p-8 mt-8">
+        <GlassmorphismCard variant="medium" className="p-8 mt-8">
           <h2 className="text-2xl font-bold mb-4">Next Steps: Phase 4</h2>
           <p className="text-gray-400 mb-4">
             Ready to implement AI integration and market data features:

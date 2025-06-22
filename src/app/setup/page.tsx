@@ -42,7 +42,7 @@ export default function SetupPage() {
         {/* Setup Instructions */}
         <div className="space-y-8">
           {/* Quick Start */}
-          <GlassmorphismCard variant="heavy" glow="blue" className="p-8">
+          <GlassmorphismCard variant="heavy" className="p-8">
             <h2 className="text-2xl font-bold mb-4 text-neon-blue">🚀 Quick Start</h2>
             <div className="space-y-4">
               <p className="text-gray-300">Run this command to generate your NextAuth secret:</p>
@@ -62,7 +62,7 @@ export default function SetupPage() {
           </GlassmorphismCard>
 
           {/* Google OAuth Setup */}
-          <GlassmorphismCard variant="heavy" glow="purple" className="p-8">
+          <GlassmorphismCard variant="heavy" className="p-8">
             <h2 className="text-2xl font-bold mb-4 text-neon-purple">1️⃣ Google OAuth Setup</h2>
             <div className="space-y-4">
               <div className="flex items-center gap-2">
@@ -100,7 +100,7 @@ export default function SetupPage() {
           </GlassmorphismCard>
 
           {/* API Keys */}
-          <GlassmorphismCard variant="heavy" glow="pink" className="p-8">
+          <GlassmorphismCard variant="heavy" className="p-8">
             <h2 className="text-2xl font-bold mb-4 text-neon-pink">2️⃣ API Keys</h2>
             <div className="space-y-6">
               <div>
@@ -137,7 +137,7 @@ export default function SetupPage() {
           </GlassmorphismCard>
 
           {/* Database Setup */}
-          <GlassmorphismCard variant="heavy" glow="cyan" className="p-8">
+          <GlassmorphismCard variant="heavy" className="p-8">
             <h2 className="text-2xl font-bold mb-4 text-neon-cyan">3️⃣ Database Setup</h2>
             <div className="space-y-4">
               <div className="space-y-2">
@@ -185,7 +185,7 @@ export default function SetupPage() {
           </GlassmorphismCard>
 
           {/* Final Steps */}
-          <GlassmorphismCard variant="heavy" glow="blue" className="p-8">
+          <GlassmorphismCard variant="heavy" className="p-8">
             <h2 className="text-2xl font-bold mb-4 gradient-text">4️⃣ Final Steps</h2>
             <div className="space-y-3">
               <div className="flex items-center gap-3">

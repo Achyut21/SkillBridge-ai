@@ -22,11 +22,11 @@ export default function TestAIPage() {
         })
       })
       const data = await response.json()
-      setResults(prev => ({ ...prev, openai: data }))
+      setResults((prev: any) => ({ ...prev, openai: data }))
       toast.success("OpenAI test completed")
     } catch (error) {
       toast.error("OpenAI test failed")
-      setResults(prev => ({ ...prev, openai: { error: error.message } }))
+      setResults((prev: any) => ({ ...prev, openai: { error: (error as Error).message } }))
     }
     setLoading(null)
   }
@@ -42,7 +42,7 @@ export default function TestAIPage() {
         })
       })
       const data = await response.json()
-      setResults(prev => ({ ...prev, elevenlabs: data }))
+      setResults((prev: any) => ({ ...prev, elevenlabs: data }))
       
       if (data.success && data.audio) {
         // Play the audio
@@ -54,7 +54,7 @@ export default function TestAIPage() {
       }
     } catch (error) {
       toast.error("ElevenLabs test failed")
-      setResults(prev => ({ ...prev, elevenlabs: { error: error.message } }))
+      setResults((prev: any) => ({ ...prev, elevenlabs: { error: (error as Error).message } }))
     }
     setLoading(null)
   }
@@ -64,11 +64,11 @@ export default function TestAIPage() {
     try {
       const response = await fetch("/api/ai/recommendations?count=3&includeMarketData=true")
       const data = await response.json()
-      setResults(prev => ({ ...prev, recommendations: data }))
+      setResults((prev: any) => ({ ...prev, recommendations: data }))
       toast.success("Recommendations test completed")
     } catch (error) {
       toast.error("Recommendations test failed")
-      setResults(prev => ({ ...prev, recommendations: { error: error.message } }))
+      setResults((prev: any) => ({ ...prev, recommendations: { error: (error as Error).message } }))
     }
     setLoading(null)
   }
@@ -91,11 +91,11 @@ export default function TestAIPage() {
         })
       })
       const data = await response.json()
-      setResults(prev => ({ ...prev, market: data }))
+      setResults((prev: any) => ({ ...prev, market: data }))
       toast.success("Market data test completed")
     } catch (error) {
       toast.error("Market data test failed")
-      setResults(prev => ({ ...prev, market: { error: error.message } }))
+      setResults((prev: any) => ({ ...prev, market: { error: (error as Error).message } }))
     }
     setLoading(null)
   }

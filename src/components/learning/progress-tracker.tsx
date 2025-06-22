@@ -164,7 +164,7 @@ export function ProgressTracker({
             {["week", "month", "year"].map((timeframe) => (
               <GradientButton
                 key={timeframe}
-                variant={selectedTimeframe === timeframe ? "default" : "ghost"}
+                variant={selectedTimeframe === timeframe ? "primary" : "ghost"}
                 size="sm"
                 onClick={() => setSelectedTimeframe(timeframe as any)}
                 className={`${

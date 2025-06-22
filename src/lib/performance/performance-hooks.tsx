@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { debounce, throttle } from 'lodash';
 
 // Performance monitoring hook
@@ -286,11 +286,13 @@ export function createLazyComponent<T extends React.ComponentType<any>>(
 ) {
   const LazyComponent = React.lazy(importFn);
   
-  return (props: React.ComponentProps<T>) => (
-    <React.Suspense fallback={fallback || <div>Loading...</div>}>
-      <LazyComponent {...props} />
-    </React.Suspense>
-  );
+  return function LazyWrapper(props: any) {
+    return (
+      <React.Suspense fallback={fallback || <div>Loading...</div>}>
+        <LazyComponent {...props} />
+      </React.Suspense>
+    );
+  };
 }
 
 // Performance budget monitor

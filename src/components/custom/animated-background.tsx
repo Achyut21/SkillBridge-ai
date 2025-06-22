@@ -95,6 +95,7 @@ export function AnimatedBackground() {
     }
 
     function animate() {
+      if (!ctx || !canvas) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Update node positions with organic movement

@@ -75,7 +75,7 @@ const skillLevelToNumber = {
   [SkillLevel.EXPERT]: 4
 }
 
-const numberToSkillLevel = {
+const numberToSkillLevel: Record<number, SkillLevel> = {
   1: SkillLevel.BEGINNER,
   2: SkillLevel.INTERMEDIATE,
   3: SkillLevel.ADVANCED,
@@ -277,14 +277,14 @@ export function SkillRadar({
 
         <div className="flex items-center gap-2">
           <GradientButton
-            variant={showMarketData ? "default" : "outline"}
+            variant={showMarketData ? "primary" : "outline"}
             size="sm"
             onClick={() => setShowMarketData(!showMarketData)}
           >
             Market Data
           </GradientButton>
           <GradientButton
-            variant={showTargets ? "default" : "outline"}
+            variant={showTargets ? "primary" : "outline"}
             size="sm"
             onClick={() => setShowTargets(!showTargets)}
           >

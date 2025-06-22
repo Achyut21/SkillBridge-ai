@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 
 // Mock market data - in production, this would come from real market APIs
 const generateMarketData = (skills: any[]) => {
-  const baseData = {
+  const baseData: Record<string, any> = {
     'React/Next.js': { avgSalary: 135000, demand: 92, growth: 28, openings: 4500 },
     'TypeScript': { avgSalary: 125000, demand: 88, growth: 25, openings: 3800 },
     'Node.js': { avgSalary: 120000, demand: 85, growth: 22, openings: 3200 },
@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
     const marketData = generateMarketData(allSkills);
     
     // Calculate user's market position
-    const userSkillIds = userSkills.map(us => us.skillId);
+    const userSkillIds = userSkills.map((us: any) => us.skillId);
     const userMarketData = marketData.filter(md => 
       userSkillIds.includes(md.skillId)
     );

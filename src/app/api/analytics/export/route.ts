@@ -55,35 +55,35 @@ export async function POST(req: NextRequest) {
       },
       summary: {
         totalLearningPaths: learningPaths.length,
-        completedPaths: learningPaths.filter(lp => 
-          lp.progress.some(p => p.completionPercentage === 100)
+        completedPaths: learningPaths.filter((lp: any) => 
+          lp.progress.some((p: any) => p.completionPercentage === 100)
         ).length,
         totalSkills: skills.length,
-        averageProficiency: skills.reduce((sum, s) => sum + s.proficiencyLevel, 0) / (skills.length || 1),
+        averageProficiency: skills.reduce((sum: number, s: any) => sum + s.proficiencyLevel, 0) / (skills.length || 1),
         totalMilestones: milestones.length,
-        completedMilestones: milestones.filter(m => m.completed).length
+        completedMilestones: milestones.filter((m: any) => m.completed).length
       },
-      skillsBreakdown: skills.map(s => ({
+      skillsBreakdown: skills.map((s: any) => ({
         name: s.skill.name,
         proficiency: s.proficiencyLevel,
         lastPracticed: s.lastPracticedAt,
         category: s.skill.category
       })),
-      learningPaths: learningPaths.map(lp => ({
+      learningPaths: learningPaths.map((lp: any) => ({
         title: lp.title,
         description: lp.description,
         difficulty: lp.difficulty,
         estimatedDuration: lp.estimatedDuration,
         progress: lp.progress[0]?.completionPercentage || 0,
-        skills: lp.skills.map(s => s.name),
+        skills: lp.skills.map((s: any) => s.name),
         resourceCount: lp.resources.length
       })),
-      recentActivity: progress.slice(0, 30).map(p => ({
+      recentActivity: progress.slice(0, 30).map((p: any) => ({
         date: p.createdAt,
         completionPercentage: p.completionPercentage,
         timeSpent: p.timeSpent
       })),
-      achievements: milestones.filter(m => m.completed).map(m => ({
+      achievements: milestones.filter((m: any) => m.completed).map((m: any) => ({
         title: m.title,
         description: m.description,
         achievedAt: m.achievedAt,

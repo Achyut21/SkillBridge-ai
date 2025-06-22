@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
     })
 
     // Calculate additional metadata
-    const skillsWithMetadata = skills.map(skill => ({
+    const skillsWithMetadata = skills.map((skill: any) => ({
       ...skill,
       totalLearners: skill._count.userProgress,
       usedInPaths: skill._count.learningPathSkills

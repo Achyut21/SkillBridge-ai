@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     const recommendations = await generateRecommendations(assessmentData)
 
     // Save assessment results
-    const assessment = await prisma.$transaction(async (tx) => {
+    const assessment = await prisma.$transaction(async (tx: any) => {
       // Create or update user progress for assessed skills
       if (assessmentData.currentSkills && assessmentData.currentSkills.length > 0) {
         for (const skillAssessment of assessmentData.currentSkills) {

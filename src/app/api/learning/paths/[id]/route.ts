@@ -130,7 +130,7 @@ export async function PUT(
     }
 
     // Update learning path with transaction
-    const updatedPath = await prisma.$transaction(async (tx) => {
+    const updatedPath = await prisma.$transaction(async (tx: any) => {
       // Update the main learning path
       const updated = await tx.learningPath.update({
         where: { id },
@@ -282,7 +282,7 @@ export async function DELETE(
     }
 
     // Delete learning path and related data
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       // Delete related skills
       await tx.learningPathSkill.deleteMany({
         where: { learningPathId: id }

@@ -93,6 +93,9 @@ export async function GET(req: NextRequest) {
       }
     ];
 
+    // Define the skill comparison type
+    type SkillComparison = typeof skillComparisons[0];
+
     // Generate recommendations based on analysis
     const recommendations: Array<{
       type: string;
@@ -101,7 +104,7 @@ export async function GET(req: NextRequest) {
     }> = [];
     
     // Check for skills above market average
-    const strongSkills = skillComparisons.filter((sc: typeof skillComparisons[0]) => sc.gap > 5);
+    const strongSkills = skillComparisons.filter((sc: SkillComparison) => sc.gap > 5);
     if (strongSkills.length > 0) {
       recommendations.push({
         type: 'strength',
@@ -111,7 +114,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Check for high-demand skills below average
-    const improvementAreas = skillComparisons.filter((sc: typeof skillComparisons[0]) => 
+    const improvementAreas = skillComparisons.filter((sc: SkillComparison) => 
       sc.gap < -5 && sc.demandScore > 85
     );
     if (improvementAreas.length > 0) {
@@ -139,13 +142,13 @@ export async function GET(req: NextRequest) {
       summary: {
         averageProficiency: Math.round(avgProficiency),
         strongestSkill: skillComparisons.length > 0 
-          ? skillComparisons.reduce((max, sc) => 
+          ? skillComparisons.reduce((max: SkillComparison, sc: SkillComparison) => 
               sc.yourLevel > max.yourLevel ? sc : max, 
               skillComparisons[0]
             )
           : null,
         biggestGap: skillComparisons.length > 0
-          ? skillComparisons.reduce((max, sc) => 
+          ? skillComparisons.reduce((max: SkillComparison, sc: SkillComparison) => 
               Math.abs(sc.gap) > Math.abs(max.gap) ? sc : max, 
               skillComparisons[0]
             )

@@ -53,7 +53,7 @@ export function Header() {
 
           {showNotifications && (
             <div className="absolute right-0 mt-2 w-80">
-              <GlassmorphismCard variant="heavy" glow="purple" className="p-4">
+              <GlassmorphismCard variant="heavy" className="p-4">
                 <h3 className="font-semibold mb-3">Notifications</h3>
                 <div className="space-y-3">
                   <div className="p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all cursor-pointer">
