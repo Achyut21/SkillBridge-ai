@@ -242,17 +242,17 @@ async function generateRecommendations(assessment: SkillAssessmentForm): Promise
 // Helper function to calculate skill gaps
 function calculateSkillGaps(assessment: SkillAssessmentForm) {
   const currentSkills = assessment.currentSkills || []
-  const skillLevels = currentSkills.reduce((acc, skill) => {
+  const skillLevels = currentSkills.reduce((acc: Record<string, SkillLevel>, skill: { skillId: string; level: SkillLevel }) => {
     acc[skill.skillId] = skill.level
     return acc
   }, {} as Record<string, SkillLevel>)
 
   return {
     totalSkillsAssessed: currentSkills.length,
-    beginnerSkills: currentSkills.filter(s => s.level === SkillLevel.BEGINNER).length,
-    intermediateSkills: currentSkills.filter(s => s.level === SkillLevel.INTERMEDIATE).length,
-    advancedSkills: currentSkills.filter(s => s.level === SkillLevel.ADVANCED).length,
-    expertSkills: currentSkills.filter(s => s.level === SkillLevel.EXPERT).length,
+    beginnerSkills: currentSkills.filter((s: { level: SkillLevel }) => s.level === SkillLevel.BEGINNER).length,
+    intermediateSkills: currentSkills.filter((s: { level: SkillLevel }) => s.level === SkillLevel.INTERMEDIATE).length,
+    advancedSkills: currentSkills.filter((s: { level: SkillLevel }) => s.level === SkillLevel.ADVANCED).length,
+    expertSkills: currentSkills.filter((s: { level: SkillLevel }) => s.level === SkillLevel.EXPERT).length,
     skillLevels
   }
 }
@@ -263,7 +263,7 @@ function generateLearningPlan(assessment: SkillAssessmentForm) {
     weeklyTimeCommitment: assessment.timeCommitment,
     learningStyle: assessment.preferredLearningStyle,
     estimatedCompletion: Math.ceil((assessment.currentSkills?.length || 5) * 4 / (assessment.timeCommitment || 5)),
-    prioritySkills: assessment.currentSkills?.filter(s => s.level === SkillLevel.BEGINNER).slice(0, 3).map(s => s.skillId) || [],
+    prioritySkills: assessment.currentSkills?.filter((s: { level: SkillLevel }) => s.level === SkillLevel.BEGINNER).slice(0, 3).map((s: { skillId: string }) => s.skillId) || [],
     recommendedResources: getResourcesByLearningStyle(assessment.preferredLearningStyle)
   }
 }

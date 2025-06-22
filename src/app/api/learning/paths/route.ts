@@ -156,7 +156,11 @@ export async function POST(request: NextRequest) {
       // Add skills to the path
       if (skills.length > 0) {
         await tx.learningPathSkill.createMany({
-          data: skills.map((skill: any, index: number) => ({
+          data: skills.map((skill: {
+            skillId: string;
+            order?: number;
+            targetLevel?: SkillLevel;
+          }, index: number) => ({
             learningPathId: newPath.id,
             skillId: skill.skillId,
             order: skill.order || index,
@@ -167,7 +171,17 @@ export async function POST(request: NextRequest) {
 
       // Add resources to the path
       if (resources.length > 0) {
-        const resourceData = resources.map((resource: any) => ({
+        const resourceData = resources.map((resource: {
+          title: string;
+          type: string;
+          url: string;
+          provider?: string;
+          duration?: number;
+          difficulty?: string;
+          rating?: number;
+          price?: number;
+          isFree?: boolean;
+        }) => ({
           title: resource.title,
           type: resource.type,
           url: resource.url,

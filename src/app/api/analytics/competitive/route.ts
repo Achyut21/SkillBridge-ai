@@ -94,10 +94,14 @@ export async function GET(req: NextRequest) {
     ];
 
     // Generate recommendations based on analysis
-    const recommendations = [];
+    const recommendations: Array<{
+      type: string;
+      icon: string;
+      message: string;
+    }> = [];
     
     // Check for skills above market average
-    const strongSkills = skillComparisons.filter(sc => sc.gap > 5);
+    const strongSkills = skillComparisons.filter((sc: typeof skillComparisons[0]) => sc.gap > 5);
     if (strongSkills.length > 0) {
       recommendations.push({
         type: 'strength',
@@ -107,7 +111,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Check for high-demand skills below average
-    const improvementAreas = skillComparisons.filter(sc => 
+    const improvementAreas = skillComparisons.filter((sc: typeof skillComparisons[0]) => 
       sc.gap < -5 && sc.demandScore > 85
     );
     if (improvementAreas.length > 0) {
