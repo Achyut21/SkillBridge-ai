@@ -3,9 +3,6 @@
   "outputDirectory": ".next",
   "framework": "nextjs",
   "installCommand": "npm install",
-  "env": {
-    "NEXT_PUBLIC_APP_URL": "@vercel-url"
-  },
   "build": {
     "env": {
       "NEXT_TELEMETRY_DISABLED": "1"
