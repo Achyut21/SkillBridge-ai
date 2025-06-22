@@ -2,6 +2,12 @@
   "name": "skillbridge-ai",
   "version": "0.1.0",
   "private": true,
+  "overrides": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "@types/react": "18.3.1",
+    "@types/react-dom": "18.3.1"
+  },
   "scripts": {
     "dev": "next dev -p 3004",
     "dev:default": "next dev",
@@ -20,7 +26,7 @@
     "clean": "rm -rf .next node_modules",
     "clean:install": "npm run clean && npm install",
     "test:api": "curl http://localhost:3004/api/config-check | python3 -m json.tool",
-    "vercel-build": "prisma generate && next build"
+    "vercel-build": "npm install --legacy-peer-deps && prisma generate && next build"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
@@ -44,11 +50,11 @@
     "dotenv": "^16.5.0",
     "framer-motion": "^10.18.0",
     "lucide-react": "^0.298.0",
-    "next": "^15.3.4",
+    "next": "14.2.30",
     "next-auth": "^4.24.5",
-    "react": "^19.1.0",
+    "react": "18.3.1",
     "react-confetti": "^6.4.0",
-    "react-dom": "^19.1.0",
+    "react-dom": "18.3.1",
     "react-hook-form": "^7.48.2",
     "react-icons": "^5.5.0",
     "react-redux": "^9.2.0",
@@ -62,8 +68,8 @@
   },
   "devDependencies": {
     "@types/node": "^20.19.1",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "18.3.1",
+    "@types/react-dom": "18.3.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.30",
     "postcss": "^8",
