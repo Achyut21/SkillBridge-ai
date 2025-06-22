@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { UserSkill, Skill } from '@prisma/client';
+
+type UserSkillWithSkill = UserSkill & {
+  skill: Skill;
+};
 
 export async function GET(req: NextRequest) {
   try {
@@ -20,7 +25,7 @@ export async function GET(req: NextRequest) {
     });
 
     // Generate competitive analysis data
-    const skillComparisons = userSkills.map(us => {
+    const skillComparisons = userSkills.map((us: UserSkillWithSkill) => {
       // Mock market averages - in production, this would come from real data
       const marketAvg = 65 + Math.random() * 10;
       const topPerformers = 85 + Math.random() * 10;
