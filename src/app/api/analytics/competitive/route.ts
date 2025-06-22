@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
 
     // Calculate overall market position
     const avgProficiency = userSkills.length > 0
-      ? userSkills.reduce((sum, us) => sum + us.proficiencyLevel, 0) / userSkills.length
+      ? userSkills.reduce((sum: number, us: UserSkillWithSkill) => sum + us.proficiencyLevel, 0) / userSkills.length
       : 0;
 
     // Generate competitor scatter data
@@ -70,7 +70,7 @@ export async function GET(req: NextRequest) {
       },
       {
         category: 'Frontend Skills',
-        position: Math.floor(6200 * (1 - (userSkills.find(us => 
+        position: Math.floor(6200 * (1 - (userSkills.find((us: UserSkillWithSkill) => 
           us.skill.name.includes('React') || us.skill.name.includes('Frontend')
         )?.proficiencyLevel || 70) / 100)),
         total: 6200,
@@ -134,14 +134,18 @@ export async function GET(req: NextRequest) {
       recommendations,
       summary: {
         averageProficiency: Math.round(avgProficiency),
-        strongestSkill: skillComparisons.reduce((max, sc) => 
-          sc.yourLevel > max.yourLevel ? sc : max, 
-          skillComparisons[0]
-        ),
-        biggestGap: skillComparisons.reduce((max, sc) => 
-          Math.abs(sc.gap) > Math.abs(max.gap) ? sc : max, 
-          skillComparisons[0]
-        ),
+        strongestSkill: skillComparisons.length > 0 
+          ? skillComparisons.reduce((max, sc) => 
+              sc.yourLevel > max.yourLevel ? sc : max, 
+              skillComparisons[0]
+            )
+          : null,
+        biggestGap: skillComparisons.length > 0
+          ? skillComparisons.reduce((max, sc) => 
+              Math.abs(sc.gap) > Math.abs(max.gap) ? sc : max, 
+              skillComparisons[0]
+            )
+          : null,
         marketPosition: rankings[0].percentile,
         totalSkills: userSkills.length
       }
