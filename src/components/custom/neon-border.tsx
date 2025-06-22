@@ -6,33 +6,44 @@ import { ReactNode } from 'react';
 interface NeonBorderProps {
   children: ReactNode;
   className?: string;
-  intensity?: 'subtle' | 'medium' | 'strong';
-  animate?: boolean;
+  color?: 'brand' | 'green' | 'blue' | 'red' | 'yellow' | 'purple' | 'cyan' | 'gradient' | 'gray';
+  rounded?: string;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 }
 
 export function NeonBorder({
   children,
   className,
-  intensity = 'subtle',
-  animate = false,
+  color = 'brand',
+  rounded = 'rounded-2xl',
+  onMouseEnter,
+  onMouseLeave,
 }: NeonBorderProps) {
-  const intensities = {
-    subtle: 'shadow-md dark:shadow-[0_0_15px_rgba(168,85,247,0.2)] border-brand-300 dark:border-brand-500/30',
-    medium: 'shadow-lg dark:shadow-[0_0_25px_rgba(168,85,247,0.3)] border-brand-400 dark:border-brand-500/40',
-    strong: 'shadow-xl dark:shadow-[0_0_35px_rgba(168,85,247,0.4)] border-brand-500 dark:border-brand-500/50',
+  const colorClasses = {
+    brand: 'border-purple-500/30 shadow-soft',
+    green: 'border-green-500/30',
+    blue: 'border-blue-500/30',
+    red: 'border-red-500/30',
+    yellow: 'border-yellow-500/30',
+    purple: 'border-purple-500/30 shadow-soft',
+    cyan: 'border-cyan-500/30',
+    gradient: 'border-purple-500/30 shadow-soft',
+    gray: 'border-gray-500/30',
   };
 
   return (
     <div
       className={cn(
-        'relative rounded-2xl p-[2px] transition-all duration-300',
-        intensities[intensity],
-        animate && 'animate-subtle-pulse',
+        'relative p-[1px] border transition-smooth no-flicker',
+        rounded,
+        colorClasses[color],
         className
       )}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-brand-400 to-brand-600 dark:from-brand-600 dark:to-brand-700 opacity-10 dark:opacity-20" />
-      <div className="relative rounded-2xl bg-background">
+      <div className={cn('relative bg-background', rounded)}>
         {children}
       </div>
     </div>

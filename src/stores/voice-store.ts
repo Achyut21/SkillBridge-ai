@@ -18,6 +18,8 @@ interface VoiceStore extends VoiceSettings {
   isSpeaking: boolean
   isListening: boolean
   currentAudioUrl: string | null
+  selectedVoice?: string // Add selectedVoice for compatibility
+  selectedVoiceId?: string // Add selectedVoiceId for compatibility
   
   // Actions
   setVoiceSettings: (settings: Partial<VoiceSettings>) => void
@@ -48,6 +50,8 @@ export const useVoiceStore = create<VoiceStore>()(
       isSpeaking: false,
       isListening: false,
       currentAudioUrl: null,
+      selectedVoice: "Rachel", // Add selectedVoice
+      selectedVoiceId: VOICE_IDS.rachel, // Add selectedVoiceId
 
       // Actions
       setVoiceSettings: (settings) =>
@@ -68,6 +72,8 @@ export const useVoiceStore = create<VoiceStore>()(
           isSpeaking: false,
           isListening: false,
           currentAudioUrl: null,
+          selectedVoice: "Rachel",
+          selectedVoiceId: VOICE_IDS.rachel,
         }),
     }),
     {

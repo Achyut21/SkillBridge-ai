@@ -8,6 +8,11 @@ import {
   SkillLevel
 } from "@/lib/types"
 
+// Utility function to generate unique IDs
+function generateId(): string {
+  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
+
 interface ChatCompletionOptions {
   messages: ChatMessage[]
   temperature?: number
@@ -105,7 +110,7 @@ class OpenAIService {
     `
 
     const response = await this.createChatCompletion({
-      messages: [{ role: "user", content: userPrompt, timestamp: new Date() }],
+      messages: [{ id: generateId(), role: "user", content: userPrompt, timestamp: new Date() }],
       systemPrompt,
       temperature: 0.6,
       maxTokens: 1500,
@@ -149,7 +154,7 @@ class OpenAIService {
     `
 
     const response = await this.createChatCompletion({
-      messages: [{ role: "user", content: userPrompt, timestamp: new Date() }],
+      messages: [{ id: generateId(), role: "user", content: userPrompt, timestamp: new Date() }],
       systemPrompt,
       temperature: 0.7,
       maxTokens: 2000,
@@ -213,7 +218,7 @@ class OpenAIService {
     Keep it concise and energizing!`
 
     return this.createChatCompletion({
-      messages: [{ role: "user", content: prompt, timestamp: new Date() }],
+      messages: [{ id: generateId(), role: "user", content: prompt, timestamp: new Date() }],
       temperature: 0.9,
       maxTokens: 300,
     })
@@ -227,6 +232,7 @@ class OpenAIService {
 
     const response = await this.createChatCompletion({
       messages: [{
+        id: generateId(),
         role: "user",
         content: `Analyze this profile and extract skills with categories and estimated levels:\n\n${profileText}`,
         timestamp: new Date()

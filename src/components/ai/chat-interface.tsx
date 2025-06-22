@@ -86,7 +86,7 @@ export function ChatInterface({
                 Welcome to AI Voice Coach!
               </h3>
               <p className="text-gray-600 dark:text-gray-400 mb-4">
-                I'm here to help you with career guidance, skill recommendations, and personalized learning paths. 
+                I&apos;m here to help you with career guidance, skill recommendations, and personalized learning paths. 
                 {enableVoice ? " I'll speak my responses out loud for you!" : " Enable voice mode to hear my responses!"}
               </p>
               <div className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400">

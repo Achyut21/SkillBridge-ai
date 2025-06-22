@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { GlassmorphismCard } from '@/components/custom/glassmorphism-card';
 import { GradientButton } from '@/components/custom/gradient-button';
-import { AnimatedBackground } from '@/components/custom/animated-background';
 import { Sparkles, Mail, User, Chrome, Loader2, ArrowRight, CheckCircle, Zap } from 'lucide-react';
 
 export default function RegisterPage() {
@@ -56,8 +55,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-      <AnimatedBackground />      
+    <div className="min-h-screen flex items-center justify-center p-4">
       <div className="relative z-10 w-full max-w-5xl grid lg:grid-cols-2 gap-8 animate-fade-in">
         {/* Left Side - Benefits */}
         <div className="hidden lg:flex flex-col justify-center space-y-8">

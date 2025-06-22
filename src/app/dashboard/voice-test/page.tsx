@@ -131,7 +131,7 @@ export default function VoiceTestPage() {
         <GlassmorphismCard className="p-6">
           <h2 className="text-xl font-semibold mb-4">Instructions</h2>
           <ol className="list-decimal list-inside space-y-2 text-gray-700 dark:text-gray-300">
-            <li>Make sure you're logged in (check the header)</li>
+            <li>Make sure you&apos;re logged in (check the header)</li>
             <li>Run Health Check to verify API keys are configured</li>
             <li>Test Voice Generation to check ElevenLabs directly</li>
             <li>Test Chat with Voice to verify full integration</li>

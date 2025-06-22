@@ -315,7 +315,7 @@ export default function VoiceDiagnosticPage() {
           <div className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
             <p>If tests are failing, check the following:</p>
             <ul className="list-disc list-inside space-y-2 ml-4">
-              <li>Ensure you're logged in with Google OAuth</li>
+              <li>Ensure you&apos;re logged in with Google OAuth</li>
               <li>Verify ELEVENLABS_API_KEY is set in .env.local</li>
               <li>Check browser console (F12) for detailed error messages</li>
               <li>Ensure your browser allows audio playback (check site settings)</li>

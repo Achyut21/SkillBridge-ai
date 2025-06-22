@@ -3,8 +3,6 @@
 import Link from 'next/link';
 import { GlassmorphismCard } from '@/components/custom/glassmorphism-card';
 import { GradientButton } from '@/components/custom/gradient-button';
-import { AnimatedBackground } from '@/components/custom/animated-background';
-import { LandingNavbar } from '@/components/layout/landing-navbar';
 import { 
   Sparkles, 
   Mic, 
@@ -44,20 +42,15 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      <AnimatedBackground />
-      
-      {/* Navigation */}
-      <LandingNavbar />
-      
+    <div className="relative min-h-screen">
       {/* Hero Section */}
-      <section className="relative z-10 container mx-auto px-6 pt-28 pb-20">
+      <section className="relative z-10 container mx-auto px-6 pt-8 pb-20">
         <div className="max-w-4xl mx-auto text-center animate-fade-in">
           <h1 className="text-5xl md:text-7xl font-bold mb-6">
             <span className="gradient-text-animated">Transform Your Career</span><br />
             with AI-Powered Learning
           </h1>
-          <p className="text-xl text-gray-600 dark:text-neutral-400 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
             Voice-enabled professional development that adapts to you. Learn smarter, 
             grow faster, and stay ahead of the market.
           </p>
@@ -75,7 +68,7 @@ export default function Home() {
             </GradientButton>
           </div>
 
-          <div className="flex items-center justify-center space-x-8 text-sm text-neutral-400">
+          <div className="flex items-center justify-center space-x-8 text-sm text-gray-600 dark:text-gray-400">
             <div className="flex items-center">
               <Check className="h-4 w-4 text-brand-500 mr-2" />
               No credit card required
@@ -98,7 +91,7 @@ export default function Home() {
           <h2 className="text-4xl font-bold mb-4">
             Learn Smarter, <span className="gradient-text">Not Harder</span>
           </h2>
-          <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Our AI-powered platform revolutionizes how professionals learn and grow
           </p>
         </div>
@@ -117,7 +110,7 @@ export default function Home() {
                   <feature.icon className="h-8 w-8 text-white" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
-                <p className="text-gray-600 dark:text-neutral-400">{feature.description}</p>
+                <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
               </div>
             </GlassmorphismCard>
           ))}
@@ -131,7 +124,7 @@ export default function Home() {
             <h2 className="text-4xl font-bold mb-6">
               Everything You Need to <span className="gradient-text">Succeed</span>
             </h2>
-            <p className="text-xl text-neutral-400 mb-8">
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
               Join thousands of professionals who are accelerating their careers 
               with SkillBridge AI.
             </p>
@@ -140,7 +133,7 @@ export default function Home() {
               {benefits.map((benefit, index) => (
                 <div key={index} className="flex items-start">
                   <Check className="h-5 w-5 text-brand-500 mr-3 mt-0.5 flex-shrink-0" />
-                  <span className="text-neutral-300">{benefit}</span>
+                  <span className="text-gray-700 dark:text-gray-300">{benefit}</span>
                 </div>
               ))}
             </div>
@@ -166,9 +159,9 @@ export default function Home() {
               <div className="mb-6">
                 <div className="flex items-baseline">
                   <span className="text-4xl font-bold">$29</span>
-                  <span className="text-neutral-400 ml-2">/month</span>
+                  <span className="text-gray-600 dark:text-gray-400 ml-2">/month</span>
                 </div>
-                <p className="text-neutral-400 mt-2">Everything you need to excel</p>
+                <p className="text-gray-600 dark:text-gray-400 mt-2">Everything you need to excel</p>
               </div>
 
               <div className="space-y-3 mb-8">
@@ -204,7 +197,7 @@ export default function Home() {
           <h2 className="text-4xl font-bold mb-4">
             Ready to <span className="gradient-text">Level Up</span>?
           </h2>
-          <p className="text-xl text-neutral-400 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
             Join the AI revolution in professional development. 
             Start learning smarter today.
           </p>
@@ -216,26 +209,6 @@ export default function Home() {
           </Link>
         </GlassmorphismCard>
       </section>
-
-      {/* Footer */}
-      <footer className="relative z-10 backdrop-blur-xl bg-brand-900/10 border-t border-brand-500/20 mt-20">
-        <div className="container mx-auto px-6 py-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center">
-                <Sparkles className="h-5 w-5 text-white" />
-              </div>
-              <span className="text-sm text-neutral-400">© 2025 SkillBridge AI</span>
-            </div>
-            
-            <div className="flex items-center space-x-6 text-sm text-neutral-400">
-              <Link href="#" className="hover:text-brand-400 transition-colors">Privacy</Link>
-              <Link href="#" className="hover:text-brand-400 transition-colors">Terms</Link>
-              <Link href="#" className="hover:text-brand-400 transition-colors">Contact</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

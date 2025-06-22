@@ -29,7 +29,7 @@ const suggestedPrompts = [
   "Suggest resources for learning React and TypeScript"
 ]
 
-const WELCOME_MESSAGE = "👋 Hi! I'm your AI voice coach. Enable voice mode using the button above to hear my responses. I can help you with career guidance, skill recommendations, and personalized learning paths. What would you like to explore today?"
+const WELCOME_MESSAGE = "👋 Hi! I&apos;m your AI voice coach. Enable voice mode using the button above to hear my responses. I can help you with career guidance, skill recommendations, and personalized learning paths. What would you like to explore today?"
 
 export default function VoiceCoachPage() {
   const { data: session } = useSession()
@@ -271,7 +271,7 @@ export default function VoiceCoachPage() {
               isLoading={isLoadingRecommendations}
               onRefresh={loadRecommendations}
               onSelectSkill={(skill) => {
-                const prompt = `Tell me more about learning ${skill.skill.name} and why it's important for my career`
+                const prompt = `Tell me more about learning ${skill.skill.name} and why it&apos;s important for my career`
                 handleSendMessage(prompt)
               }}
               onSelectPath={(path) => {

@@ -33,6 +33,9 @@ model User {
   voiceSessions   VoiceSession[]
   profile         Profile?
   chatSessions    ChatSession[]
+  userProgress    UserProgress[]
+  skillAssessments SkillAssessment[]
+  learningAnalytics LearningAnalytics?
   
   @@index([email])
 }
@@ -119,21 +122,27 @@ model Session {
 
 // Skills and competencies
 model Skill {
-  id          String      @id @default(cuid())
-  name        String      @unique
-  category    String
-  description String?
-  marketDemand Float?     // 0-100 scale
-  trendingUp  Boolean     @default(false)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id            String      @id @default(cuid())
+  name          String      @unique
+  category      String
+  description   String?
+  level         String      @default("BEGINNER")
+  marketDemand  Float       @default(50) // 0-100 scale
+  trendingScore Float       @default(50) // 0-100 scale
+  averageSalary Float?
+  trendingUp    Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
   
-  userSkills  UserSkill[]
-  pathSkills  PathSkill[]
-  resources   Resource[]
+  userSkills         UserSkill[]
+  pathSkills         PathSkill[]
+  resources          Resource[]
+  userProgress       UserProgress[]
+  learningPathSkills LearningPathSkill[]
   
   @@index([category])
   @@index([marketDemand])
+  @@index([trendingScore])
 }
 
 model UserSkill {
@@ -163,18 +172,20 @@ model LearningPath {
   title           String
   description     String?
   targetRole      String?
-  estimatedHours  Int
-  difficulty      String    // beginner, intermediate, advanced
+  duration        Int       @default(12) // in weeks
+  difficulty      String    @default("MEDIUM") // EASY, MEDIUM, HARD
+  progress        Float     @default(0) // 0-100
   isActive        Boolean   @default(true)
   isPublic        Boolean   @default(false)
   completedAt     DateTime?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
   
-  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  skills     PathSkill[]
-  resources  PathResource[]
-  progress   Progress[]
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skills             PathSkill[]
+  resources          PathResource[]
+  progressTracking   Progress[]
+  learningPathSkills LearningPathSkill[]
   
   @@index([userId])
   @@index([isPublic])
@@ -197,26 +208,28 @@ model PathSkill {
 }
 
 model Resource {
-  id          String    @id @default(cuid())
-  title       String
-  description String?
-  type        String    // course, video, article, book, project
-  provider    String?   // udemy, coursera, youtube, etc
-  url         String
-  duration    Int?      // in minutes
-  difficulty  String    // beginner, intermediate, advanced
-  isPaid      Boolean   @default(false)
-  price       Float?
-  rating      Float?
-  skillId     String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id              String    @id @default(cuid())
+  title           String
+  description     String?
+  type            String    // VIDEO, ARTICLE, COURSE, BOOK, TUTORIAL, PRACTICE
+  provider        String?   // udemy, coursera, youtube, etc
+  url             String
+  duration        Int?      // in minutes
+  difficulty      String?   // EASY, MEDIUM, HARD
+  rating          Float?
+  price           Float?
+  isFree          Boolean   @default(false)
+  skillId         String?
+  learningPathId  String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
   
-  skill       Skill?         @relation(fields: [skillId], references: [id])
+  skill         Skill?         @relation(fields: [skillId], references: [id])
   pathResources PathResource[]
   
   @@index([type])
   @@index([skillId])
+  @@index([learningPathId])
 }
 
 model PathResource {
@@ -322,4 +335,101 @@ model MarketData {
   @@index([type])
   @@index([category])
   @@index([lastUpdated])
+}
+
+// Additional models for learning path system
+
+// User progress tracking (more detailed than the existing Progress model)
+model UserProgress {
+  id                String      @id @default(cuid())
+  userId            String
+  skillId           String
+  currentLevel      String      @default("BEGINNER") // BEGINNER, INTERMEDIATE, ADVANCED, EXPERT
+  targetLevel       String      @default("INTERMEDIATE")
+  progressPercentage Float      @default(0)
+  hoursSpent        Int         @default(0)
+  lastActivity      DateTime    @default(now())
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill      Skill       @relation(fields: [skillId], references: [id])
+  milestones Milestone[]
+  
+  @@unique([userId, skillId])
+  @@index([userId])
+  @@index([skillId])
+}
+
+// Milestones for achievements
+model Milestone {
+  id               String        @id @default(cuid())
+  title            String
+  description      String
+  points           Int           @default(10)
+  badge            String?
+  achievedAt       DateTime?
+  userProgressId   String
+  createdAt        DateTime      @default(now())
+  
+  userProgress UserProgress @relation(fields: [userProgressId], references: [id], onDelete: Cascade)
+  
+  @@index([userProgressId])
+  @@index([achievedAt])
+}
+
+// Learning path skills relationship (enhanced)
+model LearningPathSkill {
+  id             String       @id @default(cuid())
+  learningPathId String
+  skillId        String
+  order          Int          @default(0)
+  targetLevel    String       @default("INTERMEDIATE")
+  currentLevel   String?
+  
+  learningPath LearningPath @relation(fields: [learningPathId], references: [id], onDelete: Cascade)
+  skill        Skill        @relation(fields: [skillId], references: [id])
+  
+  @@unique([learningPathId, skillId])
+  @@index([learningPathId])
+  @@index([skillId])
+}
+
+// Skill assessments
+model SkillAssessment {
+  id                      String   @id @default(cuid())
+  userId                  String
+  currentRole             String
+  targetRole              String
+  yearsOfExperience       Int      @default(0)
+  learningGoals           String[]
+  timeCommitment          Int      @default(10)
+  preferredLearningStyle  String   @default("VISUAL")
+  budget                  Float?
+  assessmentResults       Json?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// Learning analytics
+model LearningAnalytics {
+  id                      String   @id @default(cuid())
+  userId                  String   @unique
+  totalHoursLearned       Float    @default(0)
+  skillsAcquired          Int      @default(0)
+  currentStreak           Int      @default(0)
+  longestStreak           Int      @default(0)
+  completionRate          Float    @default(0)
+  averageSessionDuration  Float    @default(0)
+  preferredLearningTime   String?
+  topSkillCategories      String[]
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
